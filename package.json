@@ -1,0 +1,31 @@
+{
+  "name": "discord-bgg-bot",
+  "version": "1.0.0",
+  "description": "Boardgamegeek Discord Bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com//Jesmaster/Discord-BGG-Bot.git"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "boardgamegeek",
+    "bgg"
+  ],
+  "author": "Jesmaster",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^12.1.1",
+    "fs": "0.0.1-security",
+    "node-fetch": "^2.6.0",
+    "querystring": "^0.2.0",
+    "xml2js": "^0.4.23"
+  },
+  "devDependencies": {
+    "eyes": "^0.1.8"
+  }
+}
