@@ -62,6 +62,12 @@ module.exports = {
                     .catch(err => { throw err })
                 ));
     },
+    /**
+     * Create Discord Embed from BGG thing
+     *
+     * @param {Object} item
+     * @return {module:"discord.js".MessageEmbed}
+     */
     itemToEmbed: function(item) {
         const Discord = require('discord.js');
         const he = require('he');
@@ -85,6 +91,25 @@ module.exports = {
                 }
             );
     },
+    /**
+     * Send game embed to channel given thing_id
+     * @param {Object} bggSearchResult
+     * @param {module:"discord.js".Message} message
+     */
+    thingIdToEmbed: async function(bggSearchResult, message) {
+        if(bggSearchResult.found) {
+            this.bggThing(bggSearchResult.thing_id)
+                .then(result => {
+                    message.channel.send(this.itemToEmbed(result.items.item[0]));
+                });
+        }
+    },
+    /**
+     *
+     * @param {module:"discord.js".Message} message
+     * @param {Array} args
+     * @return {Promise<void>}
+     */
     execute: async function(message, args) {
         //const inspect = require('eyes').inspector({maxLength: false});
 
@@ -109,41 +134,38 @@ module.exports = {
         ).then(
             bggSearchResult => {
                 if(bggSearchResult.found) {
-                    return bggSearchResult.thing_id;
+                    return bggSearchResult;
                 }
                 else {
                     //If exact search fails, run word search instead. Return first result.
                     this.bggSearch(args).then(
                         result => {
                             if(parseInt(result.items['$'].total, 10) !== 0) {
-                                return result.items.item[0]['$'].id;
+
+                                return {
+                                    found: true,
+                                    thing_id: result.items.item[0]['$'].id,
+                                };
                             }
                             else {
                                 message.channel.send(`No results found for "${args.join(' ')}".`);
-                                return '';
+
+                                return {
+                                    found: false,
+                                    thing_id: '',
+                                };
                             }
                         }
                     ).then(
-                        thing_id => {
-                            if(thing_id !== '') {
-                                this.bggThing(thing_id)
-                                    .then(result => {
-                                        message.channel.send(this.itemToEmbed(result.items.item[0]));
-                                    });
-                            }
-                        });
+                        bggSearchResult => this.thingIdToEmbed(bggSearchResult, message)
+                    );
 
-                    return '';
+                    return {
+                        found: false,
+                        thing_id: '',
+                    };
                 }
             }
-        ).then(
-            thing_id => {
-            if(thing_id !== '') {
-                this.bggThing(thing_id)
-                    .then(result => {
-                        message.channel.send(this.itemToEmbed(result.items.item[0]));
-                    });
-            }
-        });
+        ).then(bggSearchResult => this.thingIdToEmbed(bggSearchResult, message));
     },
 };
