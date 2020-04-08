@@ -63,6 +63,47 @@ module.exports = {
                 ));
     },
     /**
+     * Get Thing ID from exact search result
+     * @param {Object} result
+     * @return {{found: (boolean|boolean), thing_id: string}}
+     */
+    thingIdFromExactSearch: function(result) {
+        let found =
+            parseInt(result.items['$'].total, 10) !== 0 &&
+            result.items.item[result.items.item.length - 1].name[0]['$'].type === 'primary';
+        let thing_id = '';
+
+        //If exact search finds results, return the last (newest game) result
+        if(found) {
+            thing_id = result.items.item[result.items.item.length - 1]['$'].id ;
+        }
+
+        return {
+            found: found,
+            thing_id: thing_id,
+        };
+    },
+    /**
+     * Get Thing ID from fuzzy search result
+     * @param {Object} result
+     * @return {{found: (boolean|boolean), thing_id: string}}
+     */
+    thingIdFromFuzzySearch: function(result) {
+        let found = parseInt(result.items['$'].total, 10) !== 0;
+        let thing_id = '';
+
+        //If fuzzy search finds results, return the first result
+        if(found) {
+            // noinspection JSPotentiallyInvalidTargetOfIndexedPropertyAccess
+            thing_id = result.items.item[0]['$'].id ;
+        }
+
+        return {
+            found: found,
+            thing_id: thing_id,
+        };
+    },
+    /**
      * Create Discord Embed from BGG thing
      *
      * @param {Object} item
@@ -95,17 +136,21 @@ module.exports = {
      * Send game embed to channel given thing_id
      * @param {Object} bggSearchResult
      * @param {module:"discord.js".Message} message
+     * @param {Array} args
      */
-    thingIdToEmbed: async function(bggSearchResult, message) {
+    thingIdToEmbed: async function(bggSearchResult, message, args) {
         if(bggSearchResult.found) {
             this.bggThing(bggSearchResult.thing_id)
                 .then(result => {
                     message.channel.send(this.itemToEmbed(result.items.item[0]));
                 });
         }
+        else {
+            await message.channel.send(`No results found for "${args.join(' ')}".`);
+        }
     },
     /**
-     *
+     * Execute Discord Command
      * @param {module:"discord.js".Message} message
      * @param {Array} args
      * @return {Promise<void>}
@@ -113,59 +158,18 @@ module.exports = {
     execute: async function(message, args) {
         //const inspect = require('eyes').inspector({maxLength: false});
 
-        this.bggSearch(args, true).then(
-            result => {
-                let found =
-                    parseInt(result.items['$'].total, 10) !== 0 &&
-                    result.items.item[result.items.item.length - 1].name[0]['$'].type === 'primary';
-
-                let thing_id = '';
-
-                //If exact search finds results, return the last (newest game) result
-                if(found) {
-                    thing_id = result.items.item[result.items.item.length - 1]['$'].id ;
-                }
-
-                return {
-                    found: found,
-                    thing_id: thing_id,
-                };
-            }
-        ).then(
-            bggSearchResult => {
-                if(bggSearchResult.found) {
-                    return bggSearchResult;
-                }
-                else {
-                    //If exact search fails, run word search instead. Return first result.
-                    this.bggSearch(args).then(
-                        result => {
-                            if(parseInt(result.items['$'].total, 10) !== 0) {
-
-                                return {
-                                    found: true,
-                                    thing_id: result.items.item[0]['$'].id,
-                                };
-                            }
-                            else {
-                                message.channel.send(`No results found for "${args.join(' ')}".`);
-
-                                return {
-                                    found: false,
-                                    thing_id: '',
-                                };
-                            }
-                        }
-                    ).then(
-                        bggSearchResult => this.thingIdToEmbed(bggSearchResult, message)
-                    );
-
-                    return {
-                        found: false,
-                        thing_id: '',
-                    };
-                }
-            }
-        ).then(bggSearchResult => this.thingIdToEmbed(bggSearchResult, message));
+        this.bggSearch(args, true)
+            .then(result => this.thingIdFromExactSearch(result))
+            .then(bggSearchResult => {
+                    if(bggSearchResult.found) {
+                        this.thingIdToEmbed(bggSearchResult, message, args)
+                    }
+                    else {
+                        //If exact search fails, run word search instead. Return first result.
+                        this.bggSearch(args)
+                            .then(result => this.thingIdFromFuzzySearch(result))
+                            .then(bggSearchResult => this.thingIdToEmbed(bggSearchResult, message, args));
+                    }
+                })
     },
 };
