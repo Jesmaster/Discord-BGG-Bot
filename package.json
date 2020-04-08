@@ -4,7 +4,7 @@
   "description": "Board Game Geek Discord Bot",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"No tests yet\" && exit 0"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -31,6 +31,7 @@
     "xml2js": "^0.4.23"
   },
   "devDependencies": {
-    "eyes": "^0.1.8"
+    "eyes": "^0.1.8",
+    "mocha": "^7.1.1"
   }
 }
