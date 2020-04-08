@@ -1,0 +1,124 @@
+{
+  "items": {
+    "$": { "total": "9", "termsofuse": "https://boardgamegeek.com/xmlapi/termsofuse" },
+    "item": [
+      {
+        "$": { "type": "boardgame", "id": "177736" },
+        "name": [
+          {
+            "$": { "type": "primary", "value": "A Feast for Odin" }
+          }
+        ],
+        "yearpublished": [
+          {
+            "$": { "value": "2016" }
+          }
+        ]
+      },
+      {
+        "$": { "type": "boardgame", "id": "292592" },
+        "name": [
+          {
+            "$": { "type": "primary", "value": "A Feast for Odin: Harvest mini expansion" }
+          }
+        ],
+        "yearpublished": [
+          {
+            "$": { "value": "2019" }
+          }
+        ]
+      },
+      {
+        "$": { "type": "boardgame", "id": "236902" },
+        "name": [
+          {
+            "$": { "type": "primary", "value": "A Feast for Odin: Lofoten, Orkney, and Tierra del Fuego" }
+          }
+        ],
+        "yearpublished": [
+          {
+            "$": { "value": "2017" }
+          }
+        ]
+      },
+      {
+        "$": { "type": "boardgame", "id": "240522" },
+        "name": [
+          {
+            "$": { "type": "primary", "value": "A Feast for Odin: New Special Tiles" }
+          }
+        ],
+        "yearpublished": [
+          {
+            "$": { "value": "2017" }
+          }
+        ]
+      },
+      {
+        "$": { "type": "boardgame", "id": "216788" },
+        "name": [
+          {
+            "$": { "type": "primary", "value": "A Feast for Odin: The Norwegians" }
+          }
+        ],
+        "yearpublished": [
+          {
+            "$": { "value": "2018" }
+          }
+        ]
+      },
+      {
+        "$": { "type": "boardgameexpansion", "id": "292592" },
+        "name": [
+          {
+            "$": { "type": "primary", "value": "A Feast for Odin: Harvest mini expansion" }
+          }
+        ],
+        "yearpublished": [
+          {
+            "$": { "value": "2019" }
+          }
+        ]
+      },
+      {
+        "$": { "type": "boardgameexpansion", "id": "236902" },
+        "name": [
+          {
+            "$": { "type": "primary", "value": "A Feast for Odin: Lofoten, Orkney, and Tierra del Fuego" }
+          }
+        ],
+        "yearpublished": [
+          {
+            "$": { "value": "2017" }
+          }
+        ]
+      },
+      {
+        "$": { "type": "boardgameexpansion", "id": "240522" },
+        "name": [
+          {
+            "$": { "type": "primary", "value": "A Feast for Odin: New Special Tiles" }
+          }
+        ],
+        "yearpublished": [
+          {
+            "$": { "value": "2017" }
+          }
+        ]
+      },
+      {
+        "$": { "type": "boardgameexpansion", "id": "216788" },
+        "name": [
+          {
+            "$": { "type": "primary", "value": "A Feast for Odin: The Norwegians" }
+          }
+        ],
+        "yearpublished": [
+          {
+            "$": { "value": "2018" }
+          }
+        ]
+      }
+    ]
+  }
+}
