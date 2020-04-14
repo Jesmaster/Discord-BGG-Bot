@@ -5,6 +5,7 @@ module.exports = {
     args: true,
     api_url : 'https://boardgamegeek.com',
     types: ['boardgame', 'boardgameexpansion'],
+    cache_folder: '.bgg_bot_cache',
     /**
      * Preforms BGG API search call.
      * First attempt exact name match call. If no results then attempt partial name match.
@@ -15,25 +16,35 @@ module.exports = {
      * @return {Promise<JSON>}
      */
     bggSearch: async function(args, exact = false) {
-        const fetch = require('node-fetch');
-        const querystring = require('querystring');
-        const xml2js = require('xml2js');
-
-        const query = querystring.stringify({
+        let queryObj = {
             type: this.types.join(','),
             query: args.join(' ')
-        });
+        };
 
-        let url = `${this.api_url}/xmlapi2/search?${query}`;
         if(exact) {
-            url += '&exact=1';
+            queryObj.exact = '1';
         }
 
-        return fetch(url)
+        const querystring = require('querystring');
+        const query = querystring.stringify(queryObj);
+
+        const cache_type = 'bgg_search';
+        const cache = await this.cacheGet(cache_type, query);
+        if(cache !== false) {
+            return Promise.resolve(cache);
+        }
+
+        const fetch = require('node-fetch');
+        const xml2js = require('xml2js');
+
+        return fetch(`${this.api_url}/xmlapi2/search?${query}`)
             .then(response => response.text()
                 .then(xml => xml2js
                     .parseStringPromise(xml)
-                    .then(result => result)
+                    .then(result => {
+                        this.cacheSet(cache_type, query, result);
+                        return result;
+                    })
                     .catch(err => { throw err })
                 ));
     },
@@ -45,6 +56,12 @@ module.exports = {
      * @return {Promise<JSON>}
      */
     bggThing: async function(thing_id) {
+        const cache_type = 'bgg_thing';
+        const cache = await this.cacheGet(cache_type, thing_id);
+        if(cache !== false) {
+            return Promise.resolve(cache);
+        }
+
         const fetch = require('node-fetch');
         const querystring = require('querystring');
         const xml2js = require('xml2js');
@@ -58,12 +75,59 @@ module.exports = {
             .then(response => response.text()
                 .then(xml => xml2js
                     .parseStringPromise(xml)
-                    .then(result => result)
+                    .then(result => {
+                        this.cacheSet(cache_type, thing_id, result);
+                        return result;
+                    })
                     .catch(err => { throw err })
                 ));
     },
     /**
+     * Pull from BGG Bot Cache
+     *
+     * @param {string} cache_type
+     * @param {string} cache_key
+     * @return {JSON|boolean}
+     */
+    cacheGet: async function(cache_type, cache_key) {
+        const Keyv = require('keyv')
+        const KeyvFile = require('keyv-file')
+
+        const keyv = new Keyv({
+            store: new KeyvFile({
+                filename: `./${this.cache_folder}/${cache_type}.json`
+            })
+        });
+
+        let cache = await keyv.get(cache_key);
+        if(typeof cache !== 'undefined'){
+            return cache;
+        }
+
+        return false;
+    },
+    /**
+     * Set data for BGG Bot Cache
+     *
+     * @param {String} cache_type
+     * @param {String} cache_key
+     * @param {JSON} cache_data
+     */
+    cacheSet: async function(cache_type, cache_key, cache_data) {
+        const Keyv = require('keyv')
+        const KeyvFile = require('keyv-file')
+
+        const keyv = new Keyv({
+            store: new KeyvFile({
+                filename: `./${this.cache_folder}/${cache_type}.json`
+            })
+        });
+
+        await keyv.set(cache_key, cache_data);
+    },
+    /**
      * Get Thing ID from exact search result
+     *
      * @param {Object} result
      * @return {{found: (boolean|boolean), thing_id: string}}
      */
@@ -85,6 +149,7 @@ module.exports = {
     },
     /**
      * Get Thing ID from fuzzy search result
+     *
      * @param {Object} result
      * @return {{found: (boolean|boolean), thing_id: string}}
      */
@@ -134,6 +199,7 @@ module.exports = {
     },
     /**
      * Send game embed to channel given thing_id
+     *
      * @param {Object} bggSearchResult
      * @param {module:"discord.js".Message} message
      * @param {Array} args
@@ -151,6 +217,7 @@ module.exports = {
     },
     /**
      * Execute Discord Command
+     *
      * @param {module:"discord.js".Message} message
      * @param {Array} args
      * @return {Promise<void>}

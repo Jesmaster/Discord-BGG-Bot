@@ -26,6 +26,8 @@
     "discord.js": "^12.1.1",
     "fs": "0.0.1-security",
     "he": "^1.2.0",
+    "keyv": "^4.0.0",
+    "keyv-file": "^0.1.13",
     "node-fetch": "^2.6.0",
     "querystring": "^0.2.0",
     "xml2js": "^0.4.23"
