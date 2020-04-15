@@ -3,7 +3,6 @@ module.exports = {
     description: 'Search Boardgamegeek for game info. Args: {game_name}',
     usage: '<game_name>',
     args: true,
-    api_url : 'https://boardgamegeek.com',
     types: ['boardgame', 'boardgameexpansion'],
     cache_folder: '.bgg_bot_cache',
     /**
@@ -16,17 +15,17 @@ module.exports = {
      * @return {Promise<JSON>}
      */
     bggSearch: async function(args, exact = false) {
-        let queryObj = {
+        let params = {
             type: this.types.join(','),
             query: args.join(' ')
         };
 
         if(exact) {
-            queryObj.exact = '1';
+            params.exact = '1';
         }
 
         const querystring = require('querystring');
-        const query = querystring.stringify(queryObj);
+        const query = querystring.stringify(params);
 
         const cache_type = 'bgg_search';
         const cache = await this.cacheGet(cache_type, query);
@@ -34,19 +33,19 @@ module.exports = {
             return Promise.resolve(cache);
         }
 
-        const fetch = require('node-fetch');
-        const xml2js = require('xml2js');
+        const bgg = require('bgg')({
+            toJSONConfig: {
+                object: true,
+                sanitize: false
+            }
+        });
 
-        return fetch(`${this.api_url}/xmlapi2/search?${query}`)
-            .then(response => response.text()
-                .then(xml => xml2js
-                    .parseStringPromise(xml)
-                    .then(result => {
-                        this.cacheSet(cache_type, query, result);
-                        return result;
-                    })
-                    .catch(err => { throw err })
-                ));
+        return bgg('search', params).then(
+            result => {
+                this.cacheSet(cache_type, query, result);
+                return result;
+            }
+        )
     },
     /**
      * Preforms BGG API thing call.
@@ -62,25 +61,24 @@ module.exports = {
             return Promise.resolve(cache);
         }
 
-        const fetch = require('node-fetch');
-        const querystring = require('querystring');
-        const xml2js = require('xml2js');
-
-        const query = querystring.stringify({
+        const params = {
             type: this.types.join(','),
             id: thing_id
+        };
+
+        const bgg = require('bgg')({
+            toJSONConfig: {
+                object: true,
+                sanitize: false
+            }
         });
 
-        return fetch(`${this.api_url}/xmlapi2/thing?${query}`)
-            .then(response => response.text()
-                .then(xml => xml2js
-                    .parseStringPromise(xml)
-                    .then(result => {
-                        this.cacheSet(cache_type, thing_id, result);
-                        return result;
-                    })
-                    .catch(err => { throw err })
-                ));
+        return bgg('thing', params).then(
+            result => {
+                this.cacheSet(cache_type, thing_id, result);
+                return result;
+            }
+        )
     },
     /**
      * Pull from BGG Bot Cache
@@ -132,14 +130,21 @@ module.exports = {
      * @return {{found: (boolean|boolean), thing_id: string}}
      */
     thingIdFromExactSearch: function(result) {
-        let found =
-            parseInt(result.items['$'].total, 10) !== 0 &&
-            result.items.item[result.items.item.length - 1].name[0]['$'].type === 'primary';
+        let found = parseInt(result.items.total, 10) !== 0;
+
+        if(found) {
+            found = result.items.item instanceof Array ?
+                found && result.items.item[result.items.item.length - 1].name.type === 'primary' :
+                found && result.items.item.name.type === 'primary';
+        }
+
         let thing_id = '';
 
         //If exact search finds results, return the last (newest game) result
         if(found) {
-            thing_id = result.items.item[result.items.item.length - 1]['$'].id ;
+            thing_id = result.items.item instanceof Array ?
+                result.items.item[result.items.item.length - 1].id :
+                result.items.item.id;
         }
 
         return {
@@ -154,13 +159,15 @@ module.exports = {
      * @return {{found: (boolean|boolean), thing_id: string}}
      */
     thingIdFromFuzzySearch: function(result) {
-        let found = parseInt(result.items['$'].total, 10) !== 0;
+        let found = parseInt(result.items.total, 10) !== 0;
         let thing_id = '';
 
         //If fuzzy search finds results, return the first result
         if(found) {
             // noinspection JSPotentiallyInvalidTargetOfIndexedPropertyAccess
-            thing_id = result.items.item[0]['$'].id ;
+            thing_id = result.items.item instanceof Array ?
+                result.items.item[0].id :
+                result.items.item.id;
         }
 
         return {
@@ -180,19 +187,19 @@ module.exports = {
 
         return new Discord.MessageEmbed()
             .setColor('#3f3a60')
-            .setTitle(item.name[0]['$'].value)
-            .setURL(`https://boardgamegeek.com/${item['$'].type}/${item['$'].id}`)
-            .setThumbnail(item.thumbnail[0])
-            .setDescription(he.decode(item.description[0]).substr(0, 200)+'...')
+            .setTitle(item.name instanceof Array ? item.name[0].value : item.name.value)
+            .setURL(`https://boardgamegeek.com/${item.type}/${item.id}`)
+            .setThumbnail(item.thumbnail)
+            .setDescription(he.decode(item.description).substr(0, 200)+'...')
             .addFields(
                 {
                     name: 'Number of Players',
-                    value: `${item.minplayers[0]['$'].value} - ${item.maxplayers[0]['$'].value}`,
+                    value: `${item.minplayers.value} - ${item.maxplayers.value}`,
                     inline: true
                 },
                 {
                     name: 'Average Playtime',
-                    value: `${item.playingtime[0]['$'].value} min`,
+                    value: `${item.playingtime.value} min`,
                     inline: true
                 }
             );
@@ -208,7 +215,7 @@ module.exports = {
         if(bggSearchResult.found) {
             this.bggThing(bggSearchResult.thing_id)
                 .then(result => {
-                    message.channel.send(this.itemToEmbed(result.items.item[0]));
+                    message.channel.send(this.itemToEmbed(result.items.item));
                 });
         }
         else {
