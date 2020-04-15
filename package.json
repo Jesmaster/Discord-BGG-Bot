@@ -4,7 +4,8 @@
   "description": "Board Game Geek Discord Bot",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
