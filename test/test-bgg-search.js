@@ -13,7 +13,7 @@ mocha.describe('itemToEmbed', function() {
             if (err) throw err;
             bggThingResult = JSON.parse(fileContents);
             // noinspection JSPotentiallyInvalidTargetOfIndexedPropertyAccess
-            embed = command.itemToEmbed(bggThingResult.items.item[0]);
+            embed = command.itemToEmbed(bggThingResult.items.item);
             done();
         });
     });
