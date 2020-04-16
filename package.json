@@ -26,6 +26,7 @@
   "dependencies": {
     "bgg": "github:Jesmaster/bgg",
     "discord.js": "^12.1.1",
+    "dotenv": "^8.2.0",
     "fs": "0.0.1-security",
     "he": "^1.2.0",
     "keyv": "^4.0.0",

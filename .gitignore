@@ -106,8 +106,5 @@ dist
 #PHPStorm
 .idea
 
-#Bot config file
-config.json
-
 #Bot cache files
 .bgg_bot_cache

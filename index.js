@@ -1,8 +1,11 @@
-const fs = require('fs');
-const Discord = require('discord.js');
-const prefix = '!';
-const token = process.env.TOKEN;
-const client = new Discord.Client();
+require('dotenv').config();
+
+const
+    fs = require('fs'),
+    Discord = require('discord.js'),
+    prefix = '!',
+    token = process.env.TOKEN,
+    client = new Discord.Client();
 
 client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
@@ -15,11 +18,20 @@ for (const file of commandFiles) {
     client.commands.set(command.name, command);
 }
 
-client.on('message', message => {
+client.on('message',  message => handleMessage(message));
+
+client.login(token);
+
+/**
+ *
+ * @param {module:"discord.js".Message} message
+ */
+function handleMessage(message) {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
 
-    const args = message.content.slice(prefix.length).split(/ +/);
-    const commandName = args.shift().toLowerCase();
+    const
+        args = message.content.slice(prefix.length).split(/ +/),
+        commandName = args.shift().toLowerCase();
 
     if (!client.commands.has(commandName)) return;
 
@@ -35,12 +47,10 @@ client.on('message', message => {
         return message.channel.send(reply);
     }
 
-    try {
-        command.execute(message, args);
-    } catch (error) {
-        console.error(error);
-        message.reply('there was an error trying to execute that command!');
-    }
-});
-
-client.login(token);
+    command
+        .execute(message, args)
+        .catch(async function (error){
+            console.error(error);
+            await message.reply('there was an error trying to execute that command!');
+        });
+}
