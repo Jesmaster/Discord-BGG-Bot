@@ -1,10 +1,11 @@
 module.exports = {
     name: 'bgg-search',
-    description: 'Search Boardgamegeek for game info. Args: {game_name}',
+    description: 'Search Boardgamegeek for game info. Args: <game_name>',
     usage: '<game_name>',
     args: true,
     types: ['boardgame', 'boardgameexpansion'],
     cache_folder: '.bgg_bot_cache',
+    cache_ttl: 1000 * 60 * 60,
     /**
      * Preforms BGG API search call.
      * First attempt exact name match call. If no results then attempt partial name match.
@@ -124,7 +125,7 @@ module.exports = {
                 })
             });
 
-        await keyv.set(cache_key, cache_data);
+        await keyv.set(cache_key, cache_data, this.cache_ttl);
     },
     /**
      * Get Thing ID from exact search result
