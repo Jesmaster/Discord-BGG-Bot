@@ -11,7 +11,7 @@ Boardgamegeek Integration Bot for Discord
 >
 >Searches for a board game or expansion on BGG and displays a discord embed with the game information upon success.  
 >
->First attempts a exact name match, if there is one then it shows the newest version of the game.
+>First attempts an exact name match, if there are results then it shows the oldest version of the game.
 >
 >If the exact name match fails it will return the first result for a fuzzy match.
 >
