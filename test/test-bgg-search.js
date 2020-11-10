@@ -36,8 +36,8 @@ mocha.describe('thingIdFromExactSearch', function() {
         });
     });
 
-    mocha.it('thing id should be 131357', function() {
-       assert.equal(command.thingIdFromExactSearch(bggSearchResult).thing_id, '131357');
+    mocha.it('thing id should be 1653', function() {
+       assert.equal(command.thingIdFromExactSearch(bggSearchResult).thing_id, '1653');
     });
 });
 

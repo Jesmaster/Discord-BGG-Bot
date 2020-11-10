@@ -3,7 +3,11 @@ Boardgamegeek Integration Bot for Discord
 
 ## **Commands**
 
->`!bgg-search <game_name>`  
+>`!bgg`
+>
+>List bot commands
+
+>`!bgg search <game_name>`  
 >
 >Searches for a board game or expansion on BGG and displays a discord embed with the game information upon success.  
 >
@@ -11,10 +15,10 @@ Boardgamegeek Integration Bot for Discord
 >
 >If the exact name match fails it will return the first result for a fuzzy match.
 >
->_Example:_ `!bgg-search the resistance`  
+>_Example:_ `!bgg search the resistance`  
 ---
->`!bgg-collection <username>`
+>`!bgg collection <username>`
 >
 >Search for a collection by a username and displays a discord embed with collection details.
 >
->_Example:_ `!bgg-collection Jesmaster`
+>_Example:_ `!bgg collection jesmaster`
