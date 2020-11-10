@@ -185,6 +185,7 @@ module.exports = {
         current.bggCollection(username)
             .then(result => {
                 console.log(`Collection results found for ${username}`);
+                message.delete();
                 current.collectionPrintEmbed(result, message, username)
             })
             .catch(async function(err) {

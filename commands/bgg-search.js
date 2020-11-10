@@ -221,6 +221,7 @@ module.exports = {
         if(bggSearchResult.found) {
             this.bggThing(bggSearchResult.thing_id)
                 .then(result => {
+                    message.delete();
                     message.channel.send(this.itemToEmbed(result.items.item));
                 });
         }
