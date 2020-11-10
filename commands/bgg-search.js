@@ -140,14 +140,14 @@ module.exports = {
 
         if(found) {
             found = result.items.item instanceof Array ?
-                found && result.items.item[result.items.item.length - 1].name.type === 'primary' :
+                found && result.items.item[0].name.type === 'primary' :
                 found && result.items.item.name.type === 'primary';
         }
 
-        //If exact search finds results, return the last (newest game) result
+        //If exact search finds results, return the first (oldest game) result
         if(found) {
             thing_id = result.items.item instanceof Array ?
-                result.items.item[result.items.item.length - 1].id :
+                result.items.item[0].id :
                 result.items.item.id;
         }
 
