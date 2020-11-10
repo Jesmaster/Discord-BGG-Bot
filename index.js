@@ -29,9 +29,11 @@ client.login(token);
 function handleMessage(message) {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
 
+    let parsedMessage = parseMessage(message);
+
     const
-        args = message.content.slice(prefix.length).split(/ +/),
-        commandName = args.shift().toLowerCase();
+        args = parsedMessage.args,
+        commandName = parsedMessage.commandName;
 
     if (!client.commands.has(commandName)) return;
 
@@ -53,4 +55,20 @@ function handleMessage(message) {
             console.error(error);
             await message.reply('there was an error trying to execute that command!');
         });
+}
+
+function parseMessage(message) {
+    let
+        args = message.content.slice(prefix.length).split(/ +/),
+        commandName = args.shift().toLowerCase();
+
+    if (commandName === 'bgg') {
+        commandName = commandName+'-'+args[0];
+        args.shift();
+    }
+
+    return {
+        'args': args,
+        'commandName': commandName
+    }
 }
