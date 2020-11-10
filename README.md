@@ -6,7 +6,7 @@ Boardgamegeek Integration Bot for Discord
 >`!bgg`
 >
 >List bot commands
-
+---
 >`!bgg search <game_name>`  
 >
 >Searches for a board game or expansion on BGG and displays a discord embed with the game information upon success.  
