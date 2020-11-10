@@ -18,6 +18,10 @@ for (const file of commandFiles) {
     client.commands.set(command.name, command);
 }
 
+client.on('ready', () => {
+    client.user.setActivity('!bgg', {type: 'LISTENING'});
+});
+
 client.on('message',  message => handleMessage(message));
 
 client.login(token);
@@ -63,8 +67,14 @@ function parseMessage(message) {
         commandName = args.shift().toLowerCase();
 
     if (commandName === 'bgg') {
-        commandName = commandName+'-'+args[0];
-        args.shift();
+
+        if (args.length > 0) {
+            commandName = commandName+'-'+args[0];
+            args.shift();
+        }
+        else {
+            commandName = commandName+'-help';
+        }
     }
 
     return {
