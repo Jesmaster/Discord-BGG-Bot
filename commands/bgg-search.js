@@ -16,9 +16,11 @@ module.exports = {
      * @return {Promise<JSON>}
      */
     bggSearch: async function(args, exact = false) {
+        let search_query = args.join(' ');
+
         let params = {
             type: this.types.join(','),
-            query: args.join(' ')
+            query: search_query
         };
 
         if(exact) {
@@ -29,7 +31,8 @@ module.exports = {
             querystring = require('querystring'),
             query = querystring.stringify(params),
             cache_type = 'bgg_search',
-            cache = await this.cacheGet(cache_type, query);
+            cache = await this.cacheGet(cache_type, query),
+            fetch = require('node-fetch');
 
         if(cache !== false) {
             return Promise.resolve(cache);
@@ -42,12 +45,29 @@ module.exports = {
             }
         });
 
+        return fetch('https://boardgamegeek.com/search/boardgame?q='+search_query, {
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Accept-Language': 'en-US,en;q=0.9'
+            }
+        }).then(
+            response => {
+                return response.json().then (
+                    json => {
+                        this.cacheSet(cache_type, query, json);
+                        return json;
+                    }
+                );
+            }
+        )
+        /*
         return bgg('search', params).then(
             result => {
                 this.cacheSet(cache_type, query, result);
                 return result;
             }
         )
+        */
     },
     /**
      * Preforms BGG API thing call.
@@ -128,57 +148,26 @@ module.exports = {
         await keyv.set(cache_key, cache_data, this.cache_ttl);
     },
     /**
-     * Get Thing ID from exact search result
+     * Get Thing ID from bgg search call
      *
      * @param {Object} result
      * @return {{found: (boolean|boolean), thing_id: string}}
      */
-    thingIdFromExactSearch: function(result) {
-        let
-            found = parseInt(result.items.total, 10) !== 0,
+    thingIdFromBggSearchCall: function(result) {
+        let found = false,
             thing_id = '';
 
-        if(found) {
-            found = result.items.item instanceof Array ?
-                found && result.items.item[0].name.type === 'primary' :
-                found && result.items.item.name.type === 'primary';
-        }
-
-        //If exact search finds results, return the first (oldest game) result
-        if(found) {
-            thing_id = result.items.item instanceof Array ?
-                result.items.item[0].id :
-                result.items.item.id;
+        if (result.items instanceof Array) {
+            if (result.items.length > 0) {
+                found = true;
+                thing_id = result.items[0].objectid;
+            }
         }
 
         return {
             found: found,
-            thing_id: thing_id,
-        };
-    },
-    /**
-     * Get Thing ID from fuzzy search result
-     *
-     * @param {Object} result
-     * @return {{found: (boolean|boolean), thing_id: string}}
-     */
-    thingIdFromFuzzySearch: function(result) {
-        let
-            found = parseInt(result.items.total, 10) !== 0,
-            thing_id = '';
-
-        //If fuzzy search finds results, return the first result
-        if(found) {
-            // noinspection JSPotentiallyInvalidTargetOfIndexedPropertyAccess
-            thing_id = result.items.item instanceof Array ?
-                result.items.item[0].id :
-                result.items.item.id;
+            thing_id: thing_id
         }
-
-        return {
-            found: found,
-            thing_id: thing_id,
-        };
     },
     /**
      * Create Discord Embed from BGG thing
@@ -238,17 +227,9 @@ module.exports = {
      */
     execute: async function(message, args) {
         this.bggSearch(args, true)
-            .then(result => this.thingIdFromExactSearch(result))
+            .then(result => this.thingIdFromBggSearchCall(result))
             .then(bggSearchResult => {
-                    if(bggSearchResult.found) {
-                        this.thingIdToEmbed(bggSearchResult, message, args)
-                    }
-                    else {
-                        //If exact search fails, run word search instead. Return first result.
-                        this.bggSearch(args)
-                            .then(result => this.thingIdFromFuzzySearch(result))
-                            .then(bggSearchResult => this.thingIdToEmbed(bggSearchResult, message, args));
-                    }
-                })
+                this.thingIdToEmbed(bggSearchResult, message, args)
+            })
     },
 };

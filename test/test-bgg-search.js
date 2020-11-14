@@ -27,9 +27,9 @@ mocha.describe('itemToEmbed', function() {
     });
 });
 
-mocha.describe('thingIdFromExactSearch', function() {
+mocha.describe('thingIdFromBggSearch', function() {
     mocha.before(function(done) {
-        fs.readFile(__dirname + '/data/bgg-search-exact-result.json', 'utf8', function(err, fileContents) {
+        fs.readFile(__dirname + '/data/bgg-search-result.json', 'utf8', function(err, fileContents) {
             if (err) throw err;
             bggSearchResult = JSON.parse(fileContents);
             done();
@@ -37,20 +37,6 @@ mocha.describe('thingIdFromExactSearch', function() {
     });
 
     mocha.it('thing id should be 1653', function() {
-       assert.equal(command.thingIdFromExactSearch(bggSearchResult).thing_id, '1653');
-    });
-});
-
-mocha.describe('thingIdFromFuzzySearch', function() {
-    mocha.before(function(done) {
-        fs.readFile(__dirname + '/data/bgg-search-fuzzy-result.json', 'utf8', function(err, fileContents) {
-            if (err) throw err;
-            bggSearchResult = JSON.parse(fileContents);
-            done();
-        });
-    });
-
-    mocha.it('thing id should be 177736', function() {
-        assert.equal(command.thingIdFromFuzzySearch(bggSearchResult).thing_id, '177736');
+       assert.equal(command.thingIdFromBggSearchCall(bggSearchResult).thing_id, '28720');
     });
 });
