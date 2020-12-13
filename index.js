@@ -19,7 +19,7 @@ for (const file of commandFiles) {
 }
 
 client.on('ready', () => {
-    client.user.setActivity('!bgg', {type: 'LISTENING'});
+    client.user.setActivity('!help', {type: 'LISTENING'});
 });
 
 client.on('message',  message => handleMessage(message));
@@ -38,8 +38,6 @@ function handleMessage(message) {
     const
         args = parsedMessage.args,
         commandName = parsedMessage.commandName;
-
-    if (!client.commands.has(commandName)) return;
 
     const command = client.commands.get(commandName);
 
@@ -66,15 +64,8 @@ function parseMessage(message) {
         args = message.content.slice(prefix.length).split(/ +/),
         commandName = args.shift().toLowerCase();
 
-    if (commandName === 'bgg') {
-
-        if (args.length > 0) {
-            commandName = commandName+'-'+args[0];
-            args.shift();
-        }
-        else {
-            commandName = commandName+'-help';
-        }
+    if (commandName === 'suggest' || commandName === "help") {
+        commandName = 'bgg-' + commandName
     }
 
     return {

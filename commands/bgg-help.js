@@ -21,11 +21,11 @@ module.exports = {
                 },
                 {
                     name: 'Collection',
-                    value: 'Get collection information for a bgg user.\nUsage: `!bgg collection <username>`.\nExample: `!bgg collection jesmaster`'
+                    value: 'Get collection information for a bgg user.\nUsage: `!collection <username>`.\nExample: `!bgg collection jesmaster`'
                 },
                 {
-                    name: 'Search',
-                    value: 'Get information for a board game from bgg.\nUsage: `!bgg search <game_name>`.\nExample: `!bgg search the resistance`'
+                    name: 'Suggest',
+                    value: 'Get information for a board game from bgg.\nUsage: `!suggest <game_name>`.\nExample: `!suggest the resistance`'
                 }
             );
     },
