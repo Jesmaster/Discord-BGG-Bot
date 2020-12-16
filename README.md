@@ -1,6 +1,12 @@
 # Discord-BGG-Bot
 Boardgamegeek Integration Bot for Discord
 
+## **Installation**
+
+**[Click here](https://discord.com/oauth2/authorize?client_id=696045552625778810&scope=bot&permissions=0)** to add the bot to your server.
+
+Leave a review on my **[top.gg listing](https://top.gg/bot/696045552625778810)**
+
 ## **Commands**
 
 >`!bgg`
