@@ -1,5 +1,5 @@
 module.exports = {
-    name: 'bgg-search',
+    name: 'bgg-suggest',
     description: 'Search Boardgamegeek for game info. Args: <game_name>',
     usage: '<game_name>',
     args: true,
@@ -175,7 +175,7 @@ module.exports = {
      * @param {Object} item
      * @return {module:"discord.js".MessageEmbed}
      */
-    itemToEmbed: function(item) {
+    itemToEmbed: function(item, user) {
         const
             Discord = require('discord.js'),
             he = require('he');
@@ -186,17 +186,19 @@ module.exports = {
             .setURL(`https://boardgamegeek.com/${item.type}/${item.id}`)
             .setThumbnail(item.thumbnail)
             .setDescription(he.decode(item.description).substr(0, 200)+'...')
+            .setFooter("( 👍 Interested | 📖 Can Teach | ❌ Delete )")
+            .setAuthor(user.username, user.avatarURL())
             .addFields(
                 {
-                    name: 'Number of Players',
+                    name: ':hash: Number of Players',
                     value: `${item.minplayers.value} - ${item.maxplayers.value}`,
                     inline: true
                 },
                 {
-                    name: 'Average Playtime',
+                    name: ':hourglass: Average Playtime',
                     value: `${item.playingtime.value} min`,
                     inline: true
-                }
+                },
             );
     },
     /**
@@ -210,8 +212,32 @@ module.exports = {
         if(bggSearchResult.found) {
             this.bggThing(bggSearchResult.thing_id)
                 .then(result => {
+                    message.channel.send(this.itemToEmbed(result.items.item, message.author)).then(embedMessage => {
+                        embedMessage.react("👍");
+                        embedMessage.react("📖");
+                        embedMessage.react("❌");
+                        const filter = (reaction, user) => {
+                            return ['👍', "📖"].includes(reaction.emoji.name) && user.id === message.author.id;
+                        };
+                        const collector = embedMessage.createReactionCollector(filter, { time: 15000, dispose: true });
+                        collector.on('collect', (reaction, user) => {
+                            new_msg = embedMessage.content + `${reaction.emoji.name}<@${user.id}>`
+                            embedMessage.edit(new_msg);
+                        }).on('remove', (reaction, user) => {
+                            let msg = embedMessage.content;
+                            msg = msg.replace(`${reaction.emoji.name}<@${user.id}>`, '');
+                            embedMessage.edit(msg);
+                        });
+                        // Delete embed
+                        const deleteFilter = (reaction, user) => {
+                            return reaction.emoji.name == '❌' && user.id === message.author.id;
+                        };
+                        const deleteCollector = embedMessage.createReactionCollector(deleteFilter, { time: 15000 });
+                        deleteCollector.on('collect', () => {
+                            embedMessage.delete();
+                        });
+                    }).catch(err => console.error(err));
                     message.delete();
-                    message.channel.send(this.itemToEmbed(result.items.item));
                 });
         }
         else {
