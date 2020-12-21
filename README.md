@@ -13,14 +13,21 @@ Leave a review on my **[top.gg listing](https://top.gg/bot/696045552625778810)**
 >
 >List bot commands
 ---
+>`!bgg collection <username>`
+>
+>Search for a collection by a username and displays a discord embed with collection details.
+>
+>_Example:_ `!bgg collection jesmaster`
+---
 >`!bgg search <game_name>`  
 >
 >Searches for a board game or expansion on BGG and displays a discord embed with the game information upon success.  
 >
 >_Example:_ `!bgg search resistance`  
 ---
->`!bgg collection <username>`
+>`!bgg suggest <game_name>`
 >
->Search for a collection by a username and displays a discord embed with collection details.
+>Searches for a board game or expansion on BGG and displays a discord embed with the game information
+> and participation emoji reactions upon success. Use to suggest playing a game and see if anyone is interested and who can teach.
 >
->_Example:_ `!bgg collection jesmaster`
+>_Example:_ `!bgg suggest resistance` 

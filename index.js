@@ -19,7 +19,7 @@ for (const file of commandFiles) {
 }
 
 client.on('ready', () => {
-    client.user.setActivity('!help', {type: 'LISTENING'});
+    client.user.setActivity('!bgg', {type: 'LISTENING'});
 });
 
 client.on('message',  message => handleMessage(message));
@@ -37,7 +37,10 @@ function handleMessage(message) {
 
     const
         args = parsedMessage.args,
-        commandName = parsedMessage.commandName;
+        commandName = parsedMessage.commandName,
+        commandOptions = parsedMessage.commandOptions;
+
+    if (!client.commands.has(commandName)) return;
 
     const command = client.commands.get(commandName);
 
@@ -52,7 +55,7 @@ function handleMessage(message) {
     }
 
     command
-        .execute(message, args)
+        .execute(message, args, commandOptions)
         .catch(async function (error){
             console.error(error);
             await message.reply('there was an error trying to execute that command!');
@@ -62,14 +65,32 @@ function handleMessage(message) {
 function parseMessage(message) {
     let
         args = message.content.slice(prefix.length).split(/ +/),
-        commandName = args.shift().toLowerCase();
+        commandName = args.shift().toLowerCase(),
+        commandOptions = {};
 
-    if (commandName === 'suggest' || commandName === "help") {
-        commandName = 'bgg-' + commandName
+    if (commandName === 'bgg') {
+
+        if (args.length > 0) {
+
+            if (args[0] === 'suggest') {
+                args[0] = 'search';
+                commandOptions.type = 'suggest';
+            }
+            else if (args[0] === 'search') {
+                commandOptions.type = 'search';
+            }
+
+            commandName = commandName + '-' + args[0];
+            args.shift();
+        }
+        else {
+            commandName = commandName + '-help';
+        }
     }
 
     return {
         'args': args,
-        'commandName': commandName
+        'commandName': commandName,
+        'commandOptions': commandOptions
     }
 }

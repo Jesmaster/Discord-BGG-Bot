@@ -6,14 +6,20 @@ const command = require(`../commands/bgg-search`);
 let bggSearchResult;
 let bggThingResult;
 let embed;
+let user = {
+    username: 'Jesmaster',
+    avatarURL: function() {
+        return '';
+    }
+}
 
-mocha.describe('itemToEmbed', function() {
+mocha.describe('itemToSearchEmbed', function() {
     mocha.before(function(done) {
         fs.readFile(__dirname + '/data/bgg-thing-result.json', 'utf8', function(err, fileContents) {
             if (err) throw err;
             bggThingResult = JSON.parse(fileContents);
             // noinspection JSPotentiallyInvalidTargetOfIndexedPropertyAccess
-            embed = command.itemToEmbed(bggThingResult.items.item);
+            embed = command.itemToSearchEmbed(bggThingResult.items.item, user);
             done();
         });
     });

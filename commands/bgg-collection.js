@@ -176,9 +176,10 @@ module.exports = {
      *
      * @param {module:"discord.js".Message} message
      * @param {Array} args
+     * @param {Object} commandOptions
      * @return {Promise<void>}
      */
-    execute: async function (message, args) {
+    execute: async function (message, args, commandOptions) {
         let current = this;
         let username = args[0].toLowerCase();
 
