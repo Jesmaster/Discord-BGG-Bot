@@ -60,14 +60,6 @@ module.exports = {
                 );
             }
         )
-        /*
-        return bgg('search', params).then(
-            result => {
-                this.cacheSet(cache_type, query, result);
-                return result;
-            }
-        )
-        */
     },
     /**
      * Preforms BGG API thing call.
@@ -175,7 +167,7 @@ module.exports = {
      * @param {Object} item
      * @return {module:"discord.js".MessageEmbed}
      */
-    itemToEmbed: function(item) {
+    itemToSearchEmbed: function(item, user) {
         const
             Discord = require('discord.js'),
             he = require('he');
@@ -186,6 +178,7 @@ module.exports = {
             .setURL(`https://boardgamegeek.com/${item.type}/${item.id}`)
             .setThumbnail(item.thumbnail)
             .setDescription(he.decode(item.description).substr(0, 200)+'...')
+            .setAuthor(user.username, user.avatarURL())
             .addFields(
                 {
                     name: 'Number of Players',
@@ -206,12 +199,137 @@ module.exports = {
      * @param {module:"discord.js".Message} message
      * @param {Array} args
      */
-    thingIdToEmbed: async function(bggSearchResult, message, args) {
+    thingIdToSearchEmbed: async function(bggSearchResult, message, args) {
         if(bggSearchResult.found) {
             this.bggThing(bggSearchResult.thing_id)
                 .then(result => {
                     message.delete();
-                    message.channel.send(this.itemToEmbed(result.items.item));
+                    message.channel.send(this.itemToSearchEmbed(result.items.item,  message.author));
+                });
+        }
+        else {
+            await message.channel.send(`No results found for "${args.join(' ')}".`);
+        }
+    },
+    /**
+     * Create Discord Embed from BGG thing
+     *
+     * @param {Object} item
+     * @return {module:"discord.js".MessageEmbed}
+     */
+    itemToSuggestEmbed: function(item, user) {
+        const
+            Discord = require('discord.js'),
+            he = require('he');
+
+        return new Discord.MessageEmbed()
+            .setColor('#3f3a60')
+            .setTitle(item.name instanceof Array ? item.name[0].value : item.name.value)
+            .setURL(`https://boardgamegeek.com/${item.type}/${item.id}`)
+            .setThumbnail(item.thumbnail)
+            .setDescription(he.decode(item.description).substr(0, 200)+'...')
+            .setFooter("( 👍 Interested | 📖 Can Teach | ❌ Delete )")
+            .setAuthor(user.username, user.avatarURL())
+            .addFields(
+                {
+                    name: ':hash: Number of Players',
+                    value: `${item.minplayers.value} - ${item.maxplayers.value}`,
+                    inline: true
+                },
+                {
+                    name: ':hourglass: Average Playtime',
+                    value: `${item.playingtime.value} min`,
+                    inline: true
+                },
+                {
+                    name: `\u200B`,
+                    value: `\u200B`,
+                    inline: true,
+                },
+                {
+                    name: 'Interested in playing',
+                    value: `\u200B`,
+                    inline: true,
+                },
+                {
+                    name: 'Can teach',
+                    value: '\u200B',
+                    inline: true,
+                },
+            );
+    },
+    /**
+     * Send game embed to channel given thing_id
+     *
+     * @param {Object} bggSearchResult
+     * @param {module:"discord.js".Message} message
+     * @param {Array} args
+     */
+    thingIdToSuggestEmbed: async function(bggSearchResult, message, args) {
+        const Discord = require('discord.js');
+
+        if(bggSearchResult.found) {
+            this.bggThing(bggSearchResult.thing_id)
+                .then(result => {
+                    message.channel.send(this.itemToSuggestEmbed(result.items.item, message.author)).then(embedMessage => {
+                        let embed_message = embedMessage;
+
+                        embed_message.react("👍");
+                        embed_message.react("📖");
+                        embed_message.react("❌");
+
+                        const filter = (reaction, user) => {
+                            return ['👍', "📖"].includes(reaction.emoji.name) && !user.bot;
+                        };
+                        const collector = embed_message.createReactionCollector(filter, { dispose: true });
+
+                        collector.on('collect', (reaction, user) => {
+                            const receivedEmbed = embed_message.embeds[0];
+                            let changedEmbed = new Discord.MessageEmbed(receivedEmbed);
+                            let username = `<@${user.id}>\n\u200B`;
+                            let field_delta = 3;
+
+                            if (reaction.emoji.name === "📖") {
+                                field_delta = 4;
+                            }
+
+                            if (changedEmbed.fields[field_delta].value === '\u200B') {
+                                changedEmbed.fields[field_delta].value = username;
+                            }
+                            else {
+                                changedEmbed.fields[field_delta].value += username;
+                            }
+
+                            embed_message.edit(changedEmbed);
+                        }).on('remove', (reaction, user) => {
+                            const receivedEmbed = embed_message.embeds[0];
+                            let changedEmbed = new Discord.MessageEmbed(receivedEmbed);
+                            let username = `<@${user.id}>\n\u200B`;
+                            let field_delta = 3;
+
+                            if (reaction.emoji.name === "📖") {
+                                field_delta = 4;
+                            }
+
+                            changedEmbed.fields[field_delta].value = changedEmbed.fields[field_delta].value.replace(username, '');
+
+                            if (changedEmbed.fields[field_delta].value === '') {
+                                changedEmbed.fields[field_delta].value = '\u200B';
+                            }
+
+                            embed_message.edit(changedEmbed);
+                        });
+
+                        const deleteFilter = (reaction, user) => {
+                            return reaction.emoji.name == '❌' && user.id === message.author.id;
+                        };
+                        const deleteCollector = embed_message.createReactionCollector(deleteFilter);
+                        deleteCollector.on('collect', () => {
+                            embed_message.delete();
+                        });
+
+                    }).catch(err => console.error(err));
+                    message.delete();
                 });
         }
         else {
@@ -223,13 +341,21 @@ module.exports = {
      *
      * @param {module:"discord.js".Message} message
      * @param {Array} args
+     * @param {Object} commandOptions
      * @return {Promise<void>}
      */
-    execute: async function(message, args) {
+    execute: async function(message, args, commandOptions) {
         this.bggSearch(args, true)
             .then(result => this.thingIdFromBggSearchCall(result))
             .then(bggSearchResult => {
-                this.thingIdToEmbed(bggSearchResult, message, args)
+                switch (commandOptions.type) {
+                    case 'search':
+                        this.thingIdToSearchEmbed(bggSearchResult, message, args);
+                        break;
+                    case 'suggest':
+                        this.thingIdToSuggestEmbed(bggSearchResult, message, args);
+                        break;
+                }
             })
     },
 };
