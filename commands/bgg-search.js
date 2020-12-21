@@ -3,29 +3,20 @@ module.exports = {
     description: 'Search Boardgamegeek for game info. Args: <game_name>',
     usage: '<game_name>',
     args: true,
-    types: ['boardgame', 'boardgameexpansion'],
-    cache_folder: '.bgg_bot_cache',
-    cache_ttl: 1000 * 60 * 60,
+    cache_ttl: 1000 * 60 * 60 * 24,
     /**
      * Preforms BGG API search call.
-     * First attempt exact name match call. If no results then attempt partial name match.
      *
      * @param {Array} args
-     * @param {Boolean} exact
      *
      * @return {Promise<JSON>}
      */
-    bggSearch: async function(args, exact = false) {
+    bggSearch: async function(args) {
         let search_query = args.join(' ');
 
         let params = {
-            type: this.types.join(','),
             query: search_query
         };
-
-        if(exact) {
-            params.exact = '1';
-        }
 
         const
             querystring = require('querystring'),
@@ -79,7 +70,6 @@ module.exports = {
 
         const
             params = {
-                type: this.types.join(','),
                 id: thing_id
             },
             bgg = require('bgg')({
@@ -106,12 +96,11 @@ module.exports = {
     cacheGet: async function(cache_type, cache_key) {
         const
             Keyv = require('keyv'),
-            KeyvFile = require('keyv-file'),
-            keyv = new Keyv({
-                store: new KeyvFile({
-                    filename: `./${this.cache_folder}/${cache_type}.json`
-                })
-            });
+            keyv = new Keyv(process.env.REDIS_URL);
+
+        keyv.on('error', err => {
+            console.log('Connection Error', err);
+        });
 
         let cache = await keyv.get(cache_key);
         if(typeof cache !== 'undefined'){
@@ -130,12 +119,7 @@ module.exports = {
     cacheSet: async function(cache_type, cache_key, cache_data) {
         const
             Keyv = require('keyv'),
-            KeyvFile = require('keyv-file'),
-            keyv = new Keyv({
-                store: new KeyvFile({
-                    filename: `./${this.cache_folder}/${cache_type}.json`
-                })
-            });
+            keyv = new Keyv(process.env.REDIS_URL);
 
         await keyv.set(cache_key, cache_data, this.cache_ttl);
     },
@@ -345,7 +329,7 @@ module.exports = {
      * @return {Promise<void>}
      */
     execute: async function(message, args, commandOptions) {
-        this.bggSearch(args, true)
+        this.bggSearch(args)
             .then(result => this.thingIdFromBggSearchCall(result))
             .then(bggSearchResult => {
                 switch (commandOptions.type) {

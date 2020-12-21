@@ -24,13 +24,13 @@
   "author": "Jesmaster",
   "license": "ISC",
   "dependencies": {
+    "@keyv/redis": "^2.1.2",
     "bgg": "github:Jesmaster/bgg",
     "discord.js": "^12.5.1",
     "dotenv": "^8.2.0",
     "fs": "0.0.1-security",
     "he": "^1.2.0",
     "keyv": "^4.0.3",
-    "keyv-file": "^0.1.13",
     "node-fetch": "^2.6.1",
     "querystring": "^0.2.0"
   },
