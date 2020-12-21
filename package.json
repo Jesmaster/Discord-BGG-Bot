@@ -25,17 +25,17 @@
   "license": "ISC",
   "dependencies": {
     "bgg": "github:Jesmaster/bgg",
-    "discord.js": "^12.1.1",
+    "discord.js": "^12.5.1",
     "dotenv": "^8.2.0",
     "fs": "0.0.1-security",
     "he": "^1.2.0",
-    "keyv": "^4.0.0",
+    "keyv": "^4.0.3",
     "keyv-file": "^0.1.13",
     "node-fetch": "^2.6.1",
     "querystring": "^0.2.0"
   },
   "devDependencies": {
     "eyes": "^0.1.8",
-    "mocha": "^7.1.1"
+    "mocha": "^7.2.0"
   }
 }
