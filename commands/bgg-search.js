@@ -3,29 +3,20 @@ module.exports = {
     description: 'Search Boardgamegeek for game info. Args: <game_name>',
     usage: '<game_name>',
     args: true,
-    types: ['boardgame', 'boardgameexpansion'],
-    cache_folder: '.bgg_bot_cache',
-    cache_ttl: 1000 * 60 * 60,
+    cache_ttl: 1000 * 60 * 60 * 24,
     /**
      * Preforms BGG API search call.
-     * First attempt exact name match call. If no results then attempt partial name match.
      *
      * @param {Array} args
-     * @param {Boolean} exact
      *
      * @return {Promise<JSON>}
      */
-    bggSearch: async function(args, exact = false) {
+    bggSearch: async function(args) {
         let search_query = args.join(' ');
 
         let params = {
-            type: this.types.join(','),
             query: search_query
         };
-
-        if(exact) {
-            params.exact = '1';
-        }
 
         const
             querystring = require('querystring'),
@@ -79,7 +70,6 @@ module.exports = {
 
         const
             params = {
-                type: this.types.join(','),
                 id: thing_id
             },
             bgg = require('bgg')({
@@ -106,12 +96,11 @@ module.exports = {
     cacheGet: async function(cache_type, cache_key) {
         const
             Keyv = require('keyv'),
-            KeyvFile = require('keyv-file'),
-            keyv = new Keyv({
-                store: new KeyvFile({
-                    filename: `./${this.cache_folder}/${cache_type}.json`
-                })
-            });
+            keyv = new Keyv(process.env.REDIS_URL);
+
+        keyv.on('error', err => {
+            console.log('Connection Error', err);
+        });
 
         let cache = await keyv.get(cache_key);
         if(typeof cache !== 'undefined'){
@@ -130,12 +119,7 @@ module.exports = {
     cacheSet: async function(cache_type, cache_key, cache_data) {
         const
             Keyv = require('keyv'),
-            KeyvFile = require('keyv-file'),
-            keyv = new Keyv({
-                store: new KeyvFile({
-                    filename: `./${this.cache_folder}/${cache_type}.json`
-                })
-            });
+            keyv = new Keyv(process.env.REDIS_URL);
 
         await keyv.set(cache_key, cache_data, this.cache_ttl);
     },
@@ -271,61 +255,74 @@ module.exports = {
         if(bggSearchResult.found) {
             this.bggThing(bggSearchResult.thing_id)
                 .then(result => {
-                    message.channel.send(this.itemToSuggestEmbed(result.items.item, message.author)).then(embedMessage => {
-                        let embed_message = embedMessage;
+                    let embed = this.itemToSuggestEmbed(result.items.item, message.author);
+                    message.channel.send(embed).then(embedMessage => {
+                        embedMessage.react("👍");
+                        embedMessage.react("📖");
+                        embedMessage.react("❌");
 
-                        embed_message.react("👍");
-                        embed_message.react("📖");
-                        embed_message.react("❌");
-
+                        const blank_char = '\u200B';
+                        const time = 1000 * 60 * 60;
                         const filter = (reaction, user) => {
                             return ['👍', "📖"].includes(reaction.emoji.name) && !user.bot;
                         };
-                        const collector = embed_message.createReactionCollector(filter, { dispose: true });
+                        const collector = embedMessage.createReactionCollector(filter, { dispose: true, time: time });
 
-                        collector.on('collect', (reaction, user) => {
-                            const receivedEmbed = embed_message.embeds[0];
-                            let changedEmbed = new Discord.MessageEmbed(receivedEmbed);
-                            let username = `<@${user.id}>\n\u200B`;
-                            let field_delta = 3;
+                        collector
+                            .on('collect', (reaction, user) => {
+                                let changedEmbed = new Discord.MessageEmbed(embed);
+                                let username = `<@${user.id}>\n${blank_char}`;
+                                let field_delta = 3;
 
-                            if (reaction.emoji.name === "📖") {
-                                field_delta = 4;
-                            }
+                                if (reaction.emoji.name === "📖") {
+                                    field_delta = 4;
+                                }
 
-                            if (changedEmbed.fields[field_delta].value === '\u200B') {
-                                changedEmbed.fields[field_delta].value = username;
-                            }
-                            else {
-                                changedEmbed.fields[field_delta].value += username;
-                            }
+                                if (changedEmbed.fields[field_delta].value === blank_char) {
+                                    changedEmbed.fields[field_delta].value = username;
+                                }
+                                else {
+                                    changedEmbed.fields[field_delta].value += username;
+                                }
+                                embedMessage.edit(changedEmbed);
 
-                            embed_message.edit(changedEmbed);
-                        }).on('remove', (reaction, user) => {
-                            const receivedEmbed = embed_message.embeds[0];
-                            let changedEmbed = new Discord.MessageEmbed(receivedEmbed);
-                            let username = `<@${user.id}>\n\u200B`;
-                            let field_delta = 3;
+                                embed = changedEmbed;
+                        })
+                            .on('remove', (reaction, user) => {
+                                let changedEmbed = new Discord.MessageEmbed(embed);
+                                let username = `<@${user.id}>\n${blank_char}`;
+                                let field_delta = 3;
 
-                            if (reaction.emoji.name === "📖") {
-                                field_delta = 4;
-                            }
+                                if (reaction.emoji.name === "📖") {
+                                    field_delta = 4;
+                                }
 
-                            changedEmbed.fields[field_delta].value = changedEmbed.fields[field_delta].value.replace(username, '');
+                                changedEmbed.fields[field_delta].value = changedEmbed.fields[field_delta].value.replace(username, '');
 
-                            if (changedEmbed.fields[field_delta].value === '') {
-                                changedEmbed.fields[field_delta].value = '\u200B';
-                            }
+                                if (changedEmbed.fields[field_delta].value === '') {
+                                    changedEmbed.fields[field_delta].value = blank_char;
+                                }
 
-                            embed_message.edit(changedEmbed);
-                        });
+                                embedMessage.edit(changedEmbed);
+
+                                embed = changedEmbed;
+                        })
+                            .on('end', collected => {
+                                embedMessage.reactions.removeAll();
+                                let changedEmbed = new Discord.MessageEmbed(embed);
+                                embed.setFooter('Reactions have been closed off for this suggestion.');
+                                embedMessage.edit(embed);
+                            });
 
                         const deleteFilter = (reaction, user) => {
                             return reaction.emoji.name == '❌' && user.id === message.author.id;
                         };
-                        const deleteCollector = embed_message.createReactionCollector(deleteFilter);
+                        const deleteCollector = embedMessage.createReactionCollector(deleteFilter, {time: time});
                         deleteCollector.on('collect', () => {
-                            embed_message.delete();
+                            collector.stop();
+                            deleteCollector.stop();
+
+                            embedMessage.delete();
                         });
 
                     }).catch(err => console.error(err));
@@ -345,7 +342,7 @@ module.exports = {
      * @return {Promise<void>}
      */
     execute: async function(message, args, commandOptions) {
-        this.bggSearch(args, true)
+        this.bggSearch(args)
             .then(result => this.thingIdFromBggSearchCall(result))
             .then(bggSearchResult => {
                 switch (commandOptions.type) {

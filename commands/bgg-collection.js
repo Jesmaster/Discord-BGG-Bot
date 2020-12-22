@@ -3,7 +3,6 @@ module.exports = {
     description: 'Search Boardgamegeek for collection info. Args: <username>',
     usage: '<username>',
     args: true,
-    cache_folder: '.bgg_bot_cache',
     cache_ttl: 1000 * 60 * 60,
     /**
      * Pull from BGG Bot Cache
@@ -15,12 +14,11 @@ module.exports = {
     cacheGet: async function(cache_type, cache_key) {
         const
             Keyv = require('keyv'),
-            KeyvFile = require('keyv-file'),
-            keyv = new Keyv({
-                store: new KeyvFile({
-                    filename: `./${this.cache_folder}/${cache_type}.json`
-                })
-            });
+            keyv = new Keyv(process.env.REDIS_URL);
+
+        keyv.on('error', err => {
+            console.log('Connection Error', err);
+        });
 
         let cache = await keyv.get(cache_key);
         if(typeof cache !== 'undefined'){
@@ -39,12 +37,7 @@ module.exports = {
     cacheSet: async function(cache_type, cache_key, cache_data) {
         const
             Keyv = require('keyv'),
-            KeyvFile = require('keyv-file'),
-            keyv = new Keyv({
-                store: new KeyvFile({
-                    filename: `./${this.cache_folder}/${cache_type}.json`
-                })
-            });
+            keyv = new Keyv(process.env.REDIS_URL);
 
         await keyv.set(cache_key, cache_data, this.cache_ttl);
     },
