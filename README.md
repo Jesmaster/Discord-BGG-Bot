@@ -33,7 +33,7 @@ Leave a review on my **[top.gg listing](https://top.gg/bot/696045552625778810)**
 >
 >Searches for a board game or expansion on BGG and displays a discord embed with the game information
 > and participation emoji reactions upon success. Use to suggest playing a game and see if anyone is interested and who can teach.
-> Thank you [pocc](https://github.com/pocc) for the idea and the initial code
+> Polling will last an hour. Thank you [pocc](https://github.com/pocc) for the idea and the initial code
 >
 >_Example:_ `!bgg suggest a feast for odin` 
 >

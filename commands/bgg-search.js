@@ -255,61 +255,74 @@ module.exports = {
         if(bggSearchResult.found) {
             this.bggThing(bggSearchResult.thing_id)
                 .then(result => {
-                    message.channel.send(this.itemToSuggestEmbed(result.items.item, message.author)).then(embedMessage => {
-                        let embed_message = embedMessage;
+                    let embed = this.itemToSuggestEmbed(result.items.item, message.author);
+                    message.channel.send(embed).then(embedMessage => {
+                        embedMessage.react("👍");
+                        embedMessage.react("📖");
+                        embedMessage.react("❌");
 
-                        embed_message.react("👍");
-                        embed_message.react("📖");
-                        embed_message.react("❌");
-
+                        const blank_char = '\u200B';
+                        const time = 1000 * 60 * 60;
                         const filter = (reaction, user) => {
                             return ['👍', "📖"].includes(reaction.emoji.name) && !user.bot;
                         };
-                        const collector = embed_message.createReactionCollector(filter, { dispose: true });
+                        const collector = embedMessage.createReactionCollector(filter, { dispose: true, time: time });
 
-                        collector.on('collect', (reaction, user) => {
-                            const receivedEmbed = embed_message.embeds[0];
-                            let changedEmbed = new Discord.MessageEmbed(receivedEmbed);
-                            let username = `<@${user.id}>\n\u200B`;
-                            let field_delta = 3;
+                        collector
+                            .on('collect', (reaction, user) => {
+                                let changedEmbed = new Discord.MessageEmbed(embed);
+                                let username = `<@${user.id}>\n${blank_char}`;
+                                let field_delta = 3;
 
-                            if (reaction.emoji.name === "📖") {
-                                field_delta = 4;
-                            }
+                                if (reaction.emoji.name === "📖") {
+                                    field_delta = 4;
+                                }
 
-                            if (changedEmbed.fields[field_delta].value === '\u200B') {
-                                changedEmbed.fields[field_delta].value = username;
-                            }
-                            else {
-                                changedEmbed.fields[field_delta].value += username;
-                            }
+                                if (changedEmbed.fields[field_delta].value === blank_char) {
+                                    changedEmbed.fields[field_delta].value = username;
+                                }
+                                else {
+                                    changedEmbed.fields[field_delta].value += username;
+                                }
+                                embedMessage.edit(changedEmbed);
 
-                            embed_message.edit(changedEmbed);
-                        }).on('remove', (reaction, user) => {
-                            const receivedEmbed = embed_message.embeds[0];
-                            let changedEmbed = new Discord.MessageEmbed(receivedEmbed);
-                            let username = `<@${user.id}>\n\u200B`;
-                            let field_delta = 3;
+                                embed = changedEmbed;
+                        })
+                            .on('remove', (reaction, user) => {
+                                let changedEmbed = new Discord.MessageEmbed(embed);
+                                let username = `<@${user.id}>\n${blank_char}`;
+                                let field_delta = 3;
 
-                            if (reaction.emoji.name === "📖") {
-                                field_delta = 4;
-                            }
+                                if (reaction.emoji.name === "📖") {
+                                    field_delta = 4;
+                                }
 
-                            changedEmbed.fields[field_delta].value = changedEmbed.fields[field_delta].value.replace(username, '');
+                                changedEmbed.fields[field_delta].value = changedEmbed.fields[field_delta].value.replace(username, '');
 
-                            if (changedEmbed.fields[field_delta].value === '') {
-                                changedEmbed.fields[field_delta].value = '\u200B';
-                            }
+                                if (changedEmbed.fields[field_delta].value === '') {
+                                    changedEmbed.fields[field_delta].value = blank_char;
+                                }
 
-                            embed_message.edit(changedEmbed);
-                        });
+                                embedMessage.edit(changedEmbed);
+
+                                embed = changedEmbed;
+                        })
+                            .on('end', collected => {
+                                embedMessage.reactions.removeAll();
+                                let changedEmbed = new Discord.MessageEmbed(embed);
+                                embed.setFooter('Reactions have been closed off for this suggestion.');
+                                embedMessage.edit(embed);
+                            });
 
                         const deleteFilter = (reaction, user) => {
                             return reaction.emoji.name == '❌' && user.id === message.author.id;
                         };
-                        const deleteCollector = embed_message.createReactionCollector(deleteFilter);
+                        const deleteCollector = embedMessage.createReactionCollector(deleteFilter, {time: time});
                         deleteCollector.on('collect', () => {
-                            embed_message.delete();
+                            collector.stop();
+                            deleteCollector.stop();
+
+                            embedMessage.delete();
                         });
 
                     }).catch(err => console.error(err));
