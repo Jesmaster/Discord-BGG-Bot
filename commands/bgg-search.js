@@ -311,7 +311,7 @@ module.exports = {
                                 deleteCollector.stop();
                                 embedMessage.reactions.removeAll();
                                 let changedEmbed = new Discord.MessageEmbed(embed);
-                                embed.setFooter('Reactions have been closed off for this suggestion due to inactivity.');
+                                embed.setFooter('Reactions have been closed off for this suggestion.');
                                 embedMessage.edit(embed);
                             });
 
@@ -322,11 +322,6 @@ module.exports = {
                         deleteCollector.on('collect', () => {
                             collector.stop();
                             deleteCollector.stop();
-
-                            embedMessage.reactions.removeAll();
-                            let changedEmbed = new Discord.MessageEmbed(embed);
-                            embed.setFooter('Reactions have been closed off for this suggestion by the message author.');
-                            embedMessage.edit(embed);
                         });
 
                     }).catch(err => console.error(err));
