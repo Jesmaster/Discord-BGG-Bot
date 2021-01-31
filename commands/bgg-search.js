@@ -212,7 +212,7 @@ module.exports = {
             .setURL(`https://boardgamegeek.com/${item.type}/${item.id}`)
             .setThumbnail(item.thumbnail)
             .setDescription(he.decode(item.description).substr(0, 200)+'...')
-            .setFooter("( 👍 Interested | 📖 Can Teach | ❌ Delete )")
+            .setFooter("( 👍 Interested | 📖 Can Teach | ❌ End Suggestion )")
             .setAuthor(user.username, user.avatarURL())
             .addFields(
                 {
