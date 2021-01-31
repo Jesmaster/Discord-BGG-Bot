@@ -262,11 +262,11 @@ module.exports = {
                         embedMessage.react("❌");
 
                         const blank_char = '\u200B';
-                        const time = 1000 * 60 * 60;
+                        const time = 1000 * 60 * 60 * 24 * 7;
                         const filter = (reaction, user) => {
                             return ['👍', "📖"].includes(reaction.emoji.name) && !user.bot;
                         };
-                        const collector = embedMessage.createReactionCollector(filter, { dispose: true, time: time });
+                        const collector = embedMessage.createReactionCollector(filter, { dispose: true, idle: time });
 
                         collector
                             .on('collect', (reaction, user) => {
@@ -308,21 +308,25 @@ module.exports = {
                                 embed = changedEmbed;
                         })
                             .on('end', collected => {
+                                deleteCollector.stop();
                                 embedMessage.reactions.removeAll();
                                 let changedEmbed = new Discord.MessageEmbed(embed);
-                                embed.setFooter('Reactions have been closed off for this suggestion.');
+                                embed.setFooter('Reactions have been closed off for this suggestion due to inactivity.');
                                 embedMessage.edit(embed);
                             });
 
                         const deleteFilter = (reaction, user) => {
                             return reaction.emoji.name == '❌' && user.id === message.author.id;
                         };
-                        const deleteCollector = embedMessage.createReactionCollector(deleteFilter, {time: time});
+                        const deleteCollector = embedMessage.createReactionCollector(deleteFilter, {});
                         deleteCollector.on('collect', () => {
                             collector.stop();
                             deleteCollector.stop();
 
-                            embedMessage.delete();
+                            embedMessage.reactions.removeAll();
+                            let changedEmbed = new Discord.MessageEmbed(embed);
+                            embed.setFooter('Reactions have been closed off for this suggestion by the message author.');
+                            embedMessage.edit(embed);
                         });
 
                     }).catch(err => console.error(err));
