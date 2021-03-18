@@ -28,7 +28,7 @@ module.exports = {
                 },
                 {
                     name: 'Suggest',
-                    value: 'Get information for a board game from bgg and allow emjoi reactions for people looking to play. Polling will last an hour.\nUsage: `!bgg suggest <game_name>`.\nExample: `!bgg suggest the resistance`'
+                    value: 'Get information for a board game from bgg and allow emjoi reactions for people looking to play.\nUsage: `!bgg suggest <game_name>`.\nExample: `!bgg suggest the resistance`'
                 }
             );
     },
