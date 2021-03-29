@@ -164,7 +164,7 @@ module.exports = {
      * @param {String} username
      */
     collectionPrintEmbed: function(result, message, username) {
-        if(typeof result === 'object') {
+        if(typeof result === 'object' && result.items.totalitems > 0) {
             message.channel.send(this.collectionToEmbed(result, username));
         }
         else {
