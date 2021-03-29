@@ -102,7 +102,11 @@ module.exports = {
             console.log('Connection Error', err);
         });
 
+        cache_key = cache_type + '_' + cache_key;
         let cache = await keyv.get(cache_key);
+
+        keyv.opts.store.redis.disconnect();
+
         if(typeof cache !== 'undefined'){
             return cache;
         }
@@ -121,7 +125,10 @@ module.exports = {
             Keyv = require('keyv'),
             keyv = new Keyv(process.env.REDIS_URL);
 
+        cache_key = cache_type + '_' + cache_key;
         await keyv.set(cache_key, cache_data, this.cache_ttl);
+
+        keyv.opts.store.redis.disconnect();
     },
     /**
      * Get Thing ID from bgg search call

@@ -20,7 +20,11 @@ module.exports = {
             console.log('Connection Error', err);
         });
 
+        cache_key = cache_type + '_' + cache_key;
         let cache = await keyv.get(cache_key);
+
+        keyv.opts.store.redis.disconnect();
+
         if(typeof cache !== 'undefined'){
             return cache;
         }
@@ -39,7 +43,10 @@ module.exports = {
             Keyv = require('keyv'),
             keyv = new Keyv(process.env.REDIS_URL);
 
+        cache_key = cache_type + '_' + cache_key;
         await keyv.set(cache_key, cache_data, this.cache_ttl);
+
+        keyv.opts.store.redis.disconnect();
     },
     /**
      * Preforms BGG API collection call.
@@ -157,7 +164,7 @@ module.exports = {
      * @param {String} username
      */
     collectionPrintEmbed: function(result, message, username) {
-        if(typeof result === 'object') {
+        if(typeof result === 'object' && result.items.totalitems > 0) {
             message.channel.send(this.collectionToEmbed(result, username));
         }
         else {
