@@ -12,15 +12,10 @@ module.exports = {
      * @return {Promise<JSON>}
      */
     bggSearch: async function(args) {
-        let search_query = args.join(' ');
-
-        let params = {
-            query: search_query
-        };
-
         const
-            querystring = require('querystring'),
-            query = querystring.stringify(params),
+            search_query = args.join(' '),
+            searchParams = new URLSearchParams(JSON.stringify({query: search_query})),
+            query = searchParams.toString(),
             cache_type = 'bgg_search',
             cache = await this.cacheGet(cache_type, query),
             fetch = require('node-fetch');
