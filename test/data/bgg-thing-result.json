@@ -1,288 +1,745 @@
 {
   "items": {
-    "termsofuse": "https://boardgamegeek.com/xmlapi/termsofuse",
-    "item": {
-      "type": "boardgameexpansion",
-      "id": 216788,
-      "thumbnail": "https://cf.geekdo-images.com/thumb/img/DVxMc3vQXC5Vr-WKVlC-IDkOGaI=/fit-in/200x150/pic4278032.jpg",
-      "image": "https://cf.geekdo-images.com/original/img/ALNOZduDdcKzvLCnGpPNOkxTI7g=/0x0/pic4278032.jpg",
-      "name": [
-        {
-          "type": "primary",
-          "sortindex": 3,
-          "value": "A Feast for Odin: The Norwegians"
+    "$": {
+      "termsofuse": "https://boardgamegeek.com/xmlapi/termsofuse"
+    },
+    "item": [
+      {
+        "$": {
+          "type": "boardgame",
+          "id": "177736"
         },
-        {
-          "type": "alternate",
-          "sortindex": 5,
-          "value": "Ein Fest für Odin: Die Norweger"
-        },
-        {
-          "type": "alternate",
-          "sortindex": 4,
-          "value": "La festa per Odino: i Norvegesi"
-        },
-        {
-          "type": "alternate",
-          "sortindex": 3,
-          "value": "A la gloire d' Odin: Les Norvégiens"
-        },
-        {
-          "type": "alternate",
-          "sortindex": 1,
-          "value": "奧丁的盛宴：挪威傳奇 A Feast for Odin: The Norwegians"
-        },
-        {
-          "type": "alternate",
-          "sortindex": 1,
-          "value": "오딘을 위하여: 노르웨이 사람들"
-        }
-      ],
-      "description": "The first large expansion for A Feast for Odin, The Norwegians includes four new islands &amp;&amp;#35;40;Isle of Man, Isle of Skye, Islay, Outer Hebrides&amp;&amp;#35;41; with Irish coastal viking-settlements on the backside &amp;&amp;#35;40;Waterford, Wexford, Cork, Limerick&amp;&amp;#35;41;, where people from Norway came to stay through the winter &amp;&amp;#35;40;longphort&amp;&amp;#35;41;, to trade at, and to settle nearby. This offers new strategies and new puzzle-tiles like horse &amp;&amp;#35;40;6VP, 2x5 spaces&amp;&amp;#35;41;/pregnant horse/leather&amp;&amp;#35;40;green&amp;&amp;#35;41;/vadmal&amp;&amp;#35;40;blue&amp;&amp;#35;41; and pigs &amp;&amp;#35;40;1 VP, breed every round; 2x3 - 1 = 5 spaces&amp;&amp;#35;41;/herbal &amp;&amp;#35;40;orange&amp;&amp;#35;41;/ antler &amp;&amp;#35;40;green&amp;&amp;#35;41;/tools &amp;&amp;#35;40;blue&amp;&amp;#35;41;. The game has a third box for the tiles and offers the four old islands too &amp;&amp;#35;40;renewed little different VPs and new graphic-aspects of mini-expansion islands Lofoten/Orkneys/Tierra del Fuego&amp;&amp;#35;41;.&amp;&amp;#35;10;&amp;&amp;#35;10;The expansion includes another mountain-strip &amp;&amp;#35;40;last round&amp;&amp;#35;41;, more two-silver coins, meat/beans and runes/oil and a &amp;quot;little emigration&amp;quot; piece that covers one food instead of two. You get it on a new action-space for giving away a whaling boat. The renewed action board has three pieces that can be turned around for different numbers of players &amp;&amp;#35;40;version for 1-2, 3, and 4 players&amp;&amp;#35;41;, which increases the chances of players getting in each others way. It contains new opportunities like butchering, elk-hunting, fishing, and thievery, along with changes for some old actions. It&apos;s now easier, for example, to play an animal strategy, also because you can now get two of the same animals in one action. There is also a new fifth column to make a &amp;&amp;#35;40;better&amp;&amp;#35;41; action with your last viking! You can smith, for example, now a grey piece with maximum of eight swords by using an ore and only one action. Also for this, there are five new grey puzzle-pieces like pan, hauberk or anvil and a little board for smithable pieces with fewer than nine swords.&amp;&amp;#35;10;&amp;&amp;#35;10;Totally new is also the idea of a random start-building. Everybody gets one of the six artisan shed boards and can build the front or backside with one wood and one action. These buildings offer, covered like stonehouse and longhouse, some stuff &amp;&amp;#35;40;pieces, weapons, commodities&amp;&amp;#35;41;, VPs and one silver &amp;&amp;#35;40;horse stable 2 silver&amp;&amp;#35;41;. So everybody has another different start-opportunity - like the profession card. Another new option is, that instead of puting a profession card into the game, you can throw it away for a VP-chip. A nice little competitive element, because there are only two 4-VP-chips, six 3-VP-chips and eight &amp;&amp;#35;40;endless&amp;&amp;#35;41; 2-VP-chips.&amp;&amp;#35;10;&amp;&amp;#35;10;The expansion includes no almanac about game-elements and their viking-history. But again it was written by Gernot K&amp;ouml;pke as a &amp;quot;historical-science&amp;quot;-journalist and learnd lokal newspaper editor and main elements will be published on BGG at https://www.boardgamegeek.com/thread/2023534/almanac-almanach&amp;&amp;#35;10;The expansion includes also an extra board for ships and small emigration tiles.&amp;&amp;#35;10;&amp;&amp;#35;10;&amp;mdash;description from the designer&amp;&amp;#35;10;&amp;&amp;#35;10;",
-      "yearpublished": { "value": 2018 },
-      "minplayers": { "value": 1 },
-      "maxplayers": { "value": 4 },
-      "poll": [
-        {
-          "name": "suggested_numplayers",
-          "title": "User Suggested Number of Players",
-          "totalvotes": 21,
-          "results": [
-            {
-              "numplayers": 1,
-              "result": [
-                { "value": "Best", "numvotes": 3 },
-                { "value": "Recommended", "numvotes": 13 },
-                { "value": "Not Recommended", "numvotes": 0 }
-              ]
-            },
-            {
-              "numplayers": 2,
-              "result": [
-                { "value": "Best", "numvotes": 12 },
-                { "value": "Recommended", "numvotes": 7 },
-                { "value": "Not Recommended", "numvotes": 0 }
-              ]
-            },
-            {
-              "numplayers": 3,
-              "result": [
-                { "value": "Best", "numvotes": 10 },
-                { "value": "Recommended", "numvotes": 10 },
-                { "value": "Not Recommended", "numvotes": 1 }
-              ]
-            },
-            {
-              "numplayers": 4,
-              "result": [
-                { "value": "Best", "numvotes": 6 },
-                { "value": "Recommended", "numvotes": 11 },
-                { "value": "Not Recommended", "numvotes": 3 }
-              ]
-            },
-            {
-              "numplayers": "4+",
-              "result": [
-                { "value": "Best", "numvotes": 1 },
-                { "value": "Recommended", "numvotes": 0 },
-                { "value": "Not Recommended", "numvotes": 9 }
-              ]
+        "thumbnail": [
+          "https://cf.geekdo-images.com/s9oGMCo1fcfV4Dk3EnqLZw__thumb/img/AKxMMz2DTbBrEynhDROla8fdjJ4=/fit-in/200x150/filters:strip_icc()/pic3146943.png"
+        ],
+        "image": [
+          "https://cf.geekdo-images.com/s9oGMCo1fcfV4Dk3EnqLZw__original/img/N1X-0JB1GapFVhl98nP4tNFXMcM=/0x0/filters:format(png)/pic3146943.png"
+        ],
+        "name": [
+          {
+            "$": {
+              "type": "primary",
+              "sortindex": "3",
+              "value": "A Feast for Odin"
             }
-          ]
-        },
-        {
-          "name": "suggested_playerage",
-          "title": "User Suggested Player Age",
-          "totalvotes": 5,
-          "results": {
-            "result": [
-              { "value": 2, "numvotes": 0 },
-              { "value": 3, "numvotes": 0 },
-              { "value": 4, "numvotes": 0 },
-              { "value": 5, "numvotes": 0 },
-              { "value": 6, "numvotes": 0 },
-              { "value": 8, "numvotes": 0 },
-              { "value": 10, "numvotes": 3 },
-              { "value": 12, "numvotes": 2 },
-              { "value": 14, "numvotes": 0 },
-              { "value": 16, "numvotes": 0 },
-              { "value": 18, "numvotes": 0 },
-              { "value": "21 and up", "numvotes": 0 }
-            ]
+          },
+          {
+            "$": {
+              "type": "alternate",
+              "sortindex": "1",
+              "value": "À la gloire d'Odin"
+            }
+          },
+          {
+            "$": {
+              "type": "alternate",
+              "sortindex": "4",
+              "value": "Um Banquete a Odin"
+            }
+          },
+          {
+            "$": {
+              "type": "alternate",
+              "sortindex": "4",
+              "value": "El Banquete de Odín"
+            }
+          },
+          {
+            "$": {
+              "type": "alternate",
+              "sortindex": "5",
+              "value": "Ein Fest für Odin"
+            }
+          },
+          {
+            "$": {
+              "type": "alternate",
+              "sortindex": "4",
+              "value": "La Festa per Odino"
+            }
+          },
+          {
+            "$": {
+              "type": "alternate",
+              "sortindex": "1",
+              "value": "Odin"
+            }
+          },
+          {
+            "$": {
+              "type": "alternate",
+              "sortindex": "1",
+              "value": "Uczta Dla Odyna"
+            }
+          },
+          {
+            "$": {
+              "type": "alternate",
+              "sortindex": "1",
+              "value": "Uczta u Odyna"
+            }
+          },
+          {
+            "$": {
+              "type": "alternate",
+              "sortindex": "1",
+              "value": "Во славу Одина"
+            }
+          },
+          {
+            "$": {
+              "type": "alternate",
+              "sortindex": "1",
+              "value": "オーディンの祝祭"
+            }
+          },
+          {
+            "$": {
+              "type": "alternate",
+              "sortindex": "1",
+              "value": "奧丁的盛宴"
+            }
+          },
+          {
+            "$": {
+              "type": "alternate",
+              "sortindex": "1",
+              "value": "오딘을 위하여"
+            }
           }
-        },
-        {
-          "name": "language_dependence",
-          "title": "Language Dependence",
-          "totalvotes": 4,
-          "results": {
-            "result": [
+        ],
+        "description": [
+          "A Feast for Odin is a saga in the form of a board game. You are reliving the cultural achievements, mercantile expeditions, and pillages of those tribes we know as Viking today &mdash; a term that was used quite differently towards the end of the first millennium.&#10;&#10;When the northerners went out for a raid, they used to say they headed out for a viking. Their Scandinavian ancestors, however, were much more than just pirates. They were explorers and founders of states. Leif Eriksson is said to be the first European in America, long before Columbus.&#10;In what is known today as Normandy, the intruders were not called Vikings but Normans. One of them is the famous William the Conqueror who invaded England in 1066. He managed to do what the king of Norway failed to do only a few years prior: conquer the Throne of England. The reason why the people of these times became such strong seafarers is due to their unfortunate agricultural situation. Crop shortfalls caused great distress.&#10;&#10;In this game, you will raid and explore new territories. You will also experience their day-to-day activities: collecting goods to achieve a financially secure position in society. In the end, the player whose possessions bear the greatest value will be declared the winner.&#10;&#10;--gameplay description from @StoryBoardGamer's review:&#10;A Feast for Odin is a points-driven game, with plethora of pathways to victory, with a range of risk balanced against reward. A significant portion of this is your central hall, which has a whopping -86 points of squares and a major part of your game is attempting to cover these up with various tiles. Likewise, long halls and island colonies can also offer large rewards, but they will have penalties of their own.&#10;&#10;Each year follows a familiar pattern of preparation, worker placement, and then meeting the requirements of your feast. The main phase of each year is a worker placement affair. You start with a selection of Vikings, and a large action board with a whopping 61 different options to choose from. Each of these will be arranged from left to right in one of four columns. Each column requires an additional Viking to activate, but they are proportionally more powerful.&#10;&#10;At the end of each round, you will need to fill a feast table with food, alternating between plants and vegetable matter. You will also have a chance to lay the valuable green and blue tiles into your main hall. The configuration of these tiles must follow certain requirements, but your main goal is to both cover up a line of coin icons to increase your income, while otherwise encircling certain printed icons to generate those.&#10;&#10;You will build your engine over time, following an alternating pattern of outward expansion and hunting against development and cultivation. It all comes down to how much you&rsquo;re willing to take on at any one time, and what risks you&rsquo;re willing to set yourself up with for their rewards.&#10;&#10;"
+        ],
+        "yearpublished": [
+          {
+            "$": {
+              "value": "2016"
+            }
+          }
+        ],
+        "minplayers": [
+          {
+            "$": {
+              "value": "1"
+            }
+          }
+        ],
+        "maxplayers": [
+          {
+            "$": {
+              "value": "4"
+            }
+          }
+        ],
+        "poll": [
+          {
+            "$": {
+              "name": "suggested_numplayers",
+              "title": "User Suggested Number of Players",
+              "totalvotes": "455"
+            },
+            "results": [
               {
-                "level": 1,
-                "value": "No necessary in-game text",
-                "numvotes": 0
+                "$": {
+                  "numplayers": "1"
+                },
+                "result": [
+                  {
+                    "$": {
+                      "value": "Best",
+                      "numvotes": "94"
+                    }
+                  },
+                  {
+                    "$": {
+                      "value": "Recommended",
+                      "numvotes": "227"
+                    }
+                  },
+                  {
+                    "$": {
+                      "value": "Not Recommended",
+                      "numvotes": "35"
+                    }
+                  }
+                ]
               },
               {
-                "level": 2,
-                "value": "Some necessary text - easily memorized or small crib sheet",
-                "numvotes": 4
+                "$": {
+                  "numplayers": "2"
+                },
+                "result": [
+                  {
+                    "$": {
+                      "value": "Best",
+                      "numvotes": "160"
+                    }
+                  },
+                  {
+                    "$": {
+                      "value": "Recommended",
+                      "numvotes": "218"
+                    }
+                  },
+                  {
+                    "$": {
+                      "value": "Not Recommended",
+                      "numvotes": "10"
+                    }
+                  }
+                ]
               },
               {
-                "level": 3,
-                "value": "Moderate in-game text - needs crib sheet or paste ups",
-                "numvotes": 0
+                "$": {
+                  "numplayers": "3"
+                },
+                "result": [
+                  {
+                    "$": {
+                      "value": "Best",
+                      "numvotes": "188"
+                    }
+                  },
+                  {
+                    "$": {
+                      "value": "Recommended",
+                      "numvotes": "141"
+                    }
+                  },
+                  {
+                    "$": {
+                      "value": "Not Recommended",
+                      "numvotes": "16"
+                    }
+                  }
+                ]
               },
               {
-                "level": 4,
-                "value": "Extensive use of text - massive conversion needed to be playable",
-                "numvotes": 0
+                "$": {
+                  "numplayers": "4"
+                },
+                "result": [
+                  {
+                    "$": {
+                      "value": "Best",
+                      "numvotes": "54"
+                    }
+                  },
+                  {
+                    "$": {
+                      "value": "Recommended",
+                      "numvotes": "174"
+                    }
+                  },
+                  {
+                    "$": {
+                      "value": "Not Recommended",
+                      "numvotes": "84"
+                    }
+                  }
+                ]
               },
               {
-                "level": 5,
-                "value": "Unplayable in another language",
-                "numvotes": 0
+                "$": {
+                  "numplayers": "4+"
+                },
+                "result": [
+                  {
+                    "$": {
+                      "value": "Best",
+                      "numvotes": "2"
+                    }
+                  },
+                  {
+                    "$": {
+                      "value": "Recommended",
+                      "numvotes": "6"
+                    }
+                  },
+                  {
+                    "$": {
+                      "value": "Not Recommended",
+                      "numvotes": "202"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "$": {
+              "name": "suggested_playerage",
+              "title": "User Suggested Player Age",
+              "totalvotes": "66"
+            },
+            "results": [
+              {
+                "result": [
+                  {
+                    "$": {
+                      "value": "2",
+                      "numvotes": "0"
+                    }
+                  },
+                  {
+                    "$": {
+                      "value": "3",
+                      "numvotes": "0"
+                    }
+                  },
+                  {
+                    "$": {
+                      "value": "4",
+                      "numvotes": "0"
+                    }
+                  },
+                  {
+                    "$": {
+                      "value": "5",
+                      "numvotes": "0"
+                    }
+                  },
+                  {
+                    "$": {
+                      "value": "6",
+                      "numvotes": "0"
+                    }
+                  },
+                  {
+                    "$": {
+                      "value": "8",
+                      "numvotes": "4"
+                    }
+                  },
+                  {
+                    "$": {
+                      "value": "10",
+                      "numvotes": "9"
+                    }
+                  },
+                  {
+                    "$": {
+                      "value": "12",
+                      "numvotes": "29"
+                    }
+                  },
+                  {
+                    "$": {
+                      "value": "14",
+                      "numvotes": "20"
+                    }
+                  },
+                  {
+                    "$": {
+                      "value": "16",
+                      "numvotes": "4"
+                    }
+                  },
+                  {
+                    "$": {
+                      "value": "18",
+                      "numvotes": "0"
+                    }
+                  },
+                  {
+                    "$": {
+                      "value": "21 and up",
+                      "numvotes": "0"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "$": {
+              "name": "language_dependence",
+              "title": "Language Dependence",
+              "totalvotes": "29"
+            },
+            "results": [
+              {
+                "result": [
+                  {
+                    "$": {
+                      "level": "1",
+                      "value": "No necessary in-game text",
+                      "numvotes": "1"
+                    }
+                  },
+                  {
+                    "$": {
+                      "level": "2",
+                      "value": "Some necessary text - easily memorized or small crib sheet",
+                      "numvotes": "5"
+                    }
+                  },
+                  {
+                    "$": {
+                      "level": "3",
+                      "value": "Moderate in-game text - needs crib sheet or paste ups",
+                      "numvotes": "22"
+                    }
+                  },
+                  {
+                    "$": {
+                      "level": "4",
+                      "value": "Extensive use of text - massive conversion needed to be playable",
+                      "numvotes": "1"
+                    }
+                  },
+                  {
+                    "$": {
+                      "level": "5",
+                      "value": "Unplayable in another language",
+                      "numvotes": "0"
+                    }
+                  }
+                ]
               }
             ]
           }
-        }
-      ],
-      "playingtime": { "value": 120 },
-      "minplaytime": { "value": 30 },
-      "maxplaytime": { "value": 120 },
-      "minage": { "value": 12 },
-      "link": [
-        {
-          "type": "boardgamecategory",
-          "id": 1021,
-          "value": "Economic"
-        },
-        {
-          "type": "boardgamecategory",
-          "id": 1042,
-          "value": "Expansion for Base-game"
-        },
-        {
-          "type": "boardgamecategory",
-          "id": 1013,
-          "value": "Farming"
-        },
-        {
-          "type": "boardgamecategory",
-          "id": 1088,
-          "value": "Industry / Manufacturing"
-        },
-        {
-          "type": "boardgamecategory",
-          "id": 1035,
-          "value": "Medieval"
-        },
-        {
-          "type": "boardgamecategory",
-          "id": 1090,
-          "value": "Pirates"
-        },
-        {
-          "type": "boardgamecategory",
-          "id": 1028,
-          "value": "Puzzle"
-        },
-        {
-          "type": "boardgamemechanic",
-          "id": 2048,
-          "value": "Pattern Building"
-        },
-        {
-          "type": "boardgamemechanic",
-          "id": 2002,
-          "value": "Tile Placement"
-        },
-        {
-          "type": "boardgamemechanic",
-          "id": 2082,
-          "value": "Worker Placement"
-        },
-        {
-          "type": "boardgamefamily",
-          "id": 7379,
-          "value": "Animals: Pigs"
-        },
-        {
-          "type": "boardgamefamily",
-          "id": 11546,
-          "value": "Country: Ireland"
-        },
-        {
-          "type": "boardgamefamily",
-          "id": 10312,
-          "value": "Country: Norway"
-        },
-        {
-          "type": "boardgamefamily",
-          "id": 54213,
-          "value": "A Feast for Odin"
-        },
-        {
-          "type": "boardgamefamily",
-          "id": 5666,
-          "value": "Solitaire Games"
-        },
-        {
-          "type": "boardgamefamily",
-          "id": 5613,
-          "value": "Vikings"
-        },
-        {
-          "type": "boardgameexpansion",
-          "id": 177736,
-          "value": "A Feast for Odin",
-          "inbound": true
-        },
-        {
-          "type": "boardgamedesigner",
-          "id": 97563,
-          "value": "Gernot Köpke"
-        },
-        {
-          "type": "boardgamedesigner",
-          "id": 10,
-          "value": "Uwe Rosenberg"
-        },
-        {
-          "type": "boardgameartist",
-          "id": 12484,
-          "value": "Dennis Lohausen"
-        },
-        {
-          "type": "boardgamepublisher",
-          "id": 22380,
-          "value": "Feuerland Spiele"
-        },
-        {
-          "type": "boardgamepublisher",
-          "id": 10768,
-          "value": "Cranio Creations"
-        },
-        {
-          "type": "boardgamepublisher",
-          "id": 12540,
-          "value": "Game Harbor"
-        },
-        {
-          "type": "boardgamepublisher",
-          "id": 8291,
-          "value": "Korea Boardgames co., Ltd."
-        },
-        {
-          "type": "boardgamepublisher",
-          "id": 22609,
-          "value": "テンデイズゲームズ (Ten Days Games)"
-        },
-        {
-          "type": "boardgamepublisher",
-          "id": 538,
-          "value": "Z-Man Games, Inc."
-        }
-      ]
-    }
+        ],
+        "playingtime": [
+          {
+            "$": {
+              "value": "120"
+            }
+          }
+        ],
+        "minplaytime": [
+          {
+            "$": {
+              "value": "30"
+            }
+          }
+        ],
+        "maxplaytime": [
+          {
+            "$": {
+              "value": "120"
+            }
+          }
+        ],
+        "minage": [
+          {
+            "$": {
+              "value": "12"
+            }
+          }
+        ],
+        "link": [
+          {
+            "$": {
+              "type": "boardgamecategory",
+              "id": "1021",
+              "value": "Economic"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamecategory",
+              "id": "1088",
+              "value": "Industry / Manufacturing"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamecategory",
+              "id": "1035",
+              "value": "Medieval"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamecategory",
+              "id": "1028",
+              "value": "Puzzle"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamemechanic",
+              "id": "2903",
+              "value": "Automatic Resource Growth"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamemechanic",
+              "id": "2072",
+              "value": "Dice Rolling"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamemechanic",
+              "id": "2978",
+              "value": "Grid Coverage"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamemechanic",
+              "id": "2902",
+              "value": "Income"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamemechanic",
+              "id": "2661",
+              "value": "Push Your Luck"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamemechanic",
+              "id": "2819",
+              "value": "Solo / Solitaire Game"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamemechanic",
+              "id": "2002",
+              "value": "Tile Placement"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamemechanic",
+              "id": "2830",
+              "value": "Turn Order: Pass Order"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamemechanic",
+              "id": "2082",
+              "value": "Worker Placement"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamefamily",
+              "id": "24571",
+              "value": "Components: Polyominoes"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamefamily",
+              "id": "68769",
+              "value": "Components: Wooden pieces & boards"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamefamily",
+              "id": "10314",
+              "value": "Country: Iceland"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamefamily",
+              "id": "70360",
+              "value": "Digital Implementations: Board Game Arena"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamefamily",
+              "id": "54213",
+              "value": "Game: A Feast for Odin"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamefamily",
+              "id": "27646",
+              "value": "Mechanism: Tableau Building"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamefamily",
+              "id": "5666",
+              "value": "Players: Games with Solitaire Rules"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamefamily",
+              "id": "3866",
+              "value": "Series: Harvest (Uwe Rosenberg)"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamefamily",
+              "id": "5841",
+              "value": "Theme: Food / Cooking"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamefamily",
+              "id": "5613",
+              "value": "Theme: Vikings"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgameexpansion",
+              "id": "232298",
+              "value": "Deutscher Spielepreis 2017 Goodie Box"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgameexpansion",
+              "id": "236902",
+              "value": "A Feast for Odin: Lofoten, Orkney, and Tierra del Fuego"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgameexpansion",
+              "id": "292592",
+              "value": "A Feast for Odin: Mini Expansion #2"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgameexpansion",
+              "id": "240522",
+              "value": "A Feast for Odin: New Special Tiles"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgameexpansion",
+              "id": "216788",
+              "value": "A Feast for Odin: The Norwegians"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamedesigner",
+              "id": "10",
+              "value": "Uwe Rosenberg"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgameartist",
+              "id": "12484",
+              "value": "Dennis Lohausen"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamepublisher",
+              "id": "22380",
+              "value": "Feuerland Spiele"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamepublisher",
+              "id": "10768",
+              "value": "Cranio Creations"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamepublisher",
+              "id": "2366",
+              "value": "Devir"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamepublisher",
+              "id": "5657",
+              "value": "Filosofia Éditions"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamepublisher",
+              "id": "12540",
+              "value": "Game Harbor"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamepublisher",
+              "id": "18852",
+              "value": "Hobby World"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamepublisher",
+              "id": "8291",
+              "value": "Korea Boardgames Co., Ltd."
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamepublisher",
+              "id": "5812",
+              "value": "Lacerta"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamepublisher",
+              "id": "30677",
+              "value": "Maldito Games"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamepublisher",
+              "id": "35035",
+              "value": "Mandala Jogos"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamepublisher",
+              "id": "29409",
+              "value": "Super Meeple"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamepublisher",
+              "id": "4932",
+              "value": "White Goblin Games"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamepublisher",
+              "id": "538",
+              "value": "Z-Man Games"
+            }
+          },
+          {
+            "$": {
+              "type": "boardgamepublisher",
+              "id": "22609",
+              "value": "テンデイズゲームズ(TendaysGames)"
+            }
+          }
+        ]
+      }
+    ]
   }
 }

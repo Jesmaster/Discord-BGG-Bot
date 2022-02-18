@@ -19,17 +19,17 @@ mocha.describe('itemToSearchEmbed', function() {
             if (err) throw err;
             bggThingResult = JSON.parse(fileContents);
             // noinspection JSPotentiallyInvalidTargetOfIndexedPropertyAccess
-            embed = command.itemToSearchEmbed(bggThingResult.items.item, user);
+            embed = command.itemToSearchEmbed(bggThingResult.items.item[0], user);
             done();
         });
     });
 
-    mocha.it('title should be A Feast for Odin: The Norwegians', function() {
-        assert.equal(embed.title, 'A Feast for Odin: The Norwegians');
+    mocha.it('title should be A Feast for Odin', function() {
+        assert.equal(embed.title, 'A Feast for Odin');
     });
 
-    mocha.it('url should be https://boardgamegeek.com/boardgameexpansion/216788', function() {
-        assert.equal(embed.url, 'https://boardgamegeek.com/boardgameexpansion/216788');
+    mocha.it('url should be https://boardgamegeek.com/boardgame/177736', function() {
+        assert.equal(embed.url, 'https://boardgamegeek.com/boardgame/177736');
     });
 });
 

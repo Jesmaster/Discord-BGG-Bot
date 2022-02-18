@@ -1,3 +1,4 @@
+const he = require("he");
 module.exports = {
     name: 'bgg-search',
     description: 'Search Boardgamegeek for game info. Args: <game_name>',
@@ -23,13 +24,6 @@ module.exports = {
         if(cache !== false) {
             return Promise.resolve(cache);
         }
-
-        const bgg = require('bgg')({
-            toJSONConfig: {
-                object: true,
-                sanitize: false
-            }
-        });
 
         return fetch('https://boardgamegeek.com/search/boardgame?q='+search_query, {
             headers: {
@@ -57,29 +51,21 @@ module.exports = {
     bggThing: async function(thing_id) {
         const
             cache_type = 'bgg_thing',
-            cache = await this.cacheGet(cache_type, thing_id);
+            cache = await this.cacheGet(cache_type, thing_id),
+            fetch = require('node-fetch'),
+            xml2js = require('xml2js'),
+            parser = new xml2js.Parser();
 
         if(cache !== false) {
             return Promise.resolve(cache);
         }
 
-        const
-            params = {
-                id: thing_id
-            },
-            bgg = require('bgg')({
-                toJSONConfig: {
-                    object: true,
-                    sanitize: false
-                }
-            });
-
-        return bgg('thing', params).then(
-            result => {
-                this.cacheSet(cache_type, thing_id, result);
-                return result;
-            }
-        )
+        return fetch('https://boardgamegeek.com/xmlapi2/thing?id='+thing_id).then(async response => {
+            const content = await response.text();
+            const result = await parser.parseStringPromise(content);
+            this.cacheSet(cache_type, thing_id, result);
+            return result;
+        });
     },
     /**
      * Pull from BGG Bot Cache
@@ -160,22 +146,22 @@ module.exports = {
 
         return new Discord.MessageEmbed()
             .setColor('#3f3a60')
-            .setTitle(item.name instanceof Array ? item.name[0].value : item.name.value)
-            .setURL(`https://boardgamegeek.com/${item.type}/${item.id}`)
-            .setThumbnail(item.thumbnail)
-            .setDescription(he.decode(item.description).substr(0, 200)+'...')
+            .setTitle(item.name instanceof Array ? item.name[0]['$'].value : item.name['$'].value)
+            .setURL(`https://boardgamegeek.com/${item['$'].type}/${item['$'].id}`)
+            .setThumbnail(item.thumbnail[0])
+            .setDescription(he.decode(item.description[0]).substr(0, 200)+'...')
             .setAuthor(user.username, user.avatarURL())
             .addFields(
                 {
-                    name: 'Number of Players',
-                    value: `${item.minplayers.value} - ${item.maxplayers.value}`,
+                    name: ':hash: Number of Players',
+                    value: `${item.minplayers[0]['$'].value} - ${item.maxplayers[0]['$'].value}`,
                     inline: true
                 },
                 {
-                    name: 'Average Playtime',
-                    value: `${item.playingtime.value} min`,
+                    name: ':hourglass: Average Playtime',
+                    value: `${item.playingtime[0]['$'].value} min`,
                     inline: true
-                }
+                },
             );
     },
     /**
@@ -190,7 +176,7 @@ module.exports = {
             this.bggThing(bggSearchResult.thing_id)
                 .then(result => {
                     message.delete();
-                    message.channel.send(this.itemToSearchEmbed(result.items.item,  message.author));
+                    message.channel.send(this.itemToSearchEmbed(result.items.item[0],  message.author));
                 });
         }
         else {
@@ -210,21 +196,21 @@ module.exports = {
 
         return new Discord.MessageEmbed()
             .setColor('#3f3a60')
-            .setTitle(item.name instanceof Array ? item.name[0].value : item.name.value)
-            .setURL(`https://boardgamegeek.com/${item.type}/${item.id}`)
-            .setThumbnail(item.thumbnail)
-            .setDescription(he.decode(item.description).substr(0, 200)+'...')
+            .setTitle(item.name instanceof Array ? item.name[0]['$'].value : item.name['$'].value)
+            .setURL(`https://boardgamegeek.com/${item['$'].type}/${item['$'].id}`)
+            .setThumbnail(item.thumbnail[0])
+            .setDescription(he.decode(item.description[0]).substr(0, 200)+'...')
             .setFooter("( 👍 Interested | 📖 Can Teach | ❌ End Suggestion )")
             .setAuthor(user.username, user.avatarURL())
             .addFields(
                 {
                     name: ':hash: Number of Players',
-                    value: `${item.minplayers.value} - ${item.maxplayers.value}`,
+                    value: `${item.minplayers[0]['$'].value} - ${item.maxplayers[0]['$'].value}`,
                     inline: true
                 },
                 {
                     name: ':hourglass: Average Playtime',
-                    value: `${item.playingtime.value} min`,
+                    value: `${item.playingtime[0]['$'].value} min`,
                     inline: true
                 },
                 {
@@ -257,7 +243,7 @@ module.exports = {
         if(bggSearchResult.found) {
             this.bggThing(bggSearchResult.thing_id)
                 .then(result => {
-                    let embed = this.itemToSuggestEmbed(result.items.item, message.author);
+                    let embed = this.itemToSuggestEmbed(result.items.item[0], message.author);
                     message.channel.send(embed).then(embedMessage => {
                         embedMessage.react("👍");
                         embedMessage.react("📖");
