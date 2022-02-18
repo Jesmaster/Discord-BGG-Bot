@@ -25,7 +25,7 @@ mocha.describe('collectionToEmbed', function() {
         assert.equal(embed.url, 'https://boardgamegeek.com/collection/user/jesmaster');
     });
 
-    mocha.it('owned should be 74', function() {
-       assert.equal(embed.fields[1].value, 74);
+    mocha.it('owned should be 85', function() {
+       assert.equal(embed.fields[1].value, 85);
     });
 });

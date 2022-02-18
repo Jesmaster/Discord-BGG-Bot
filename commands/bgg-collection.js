@@ -1,3 +1,4 @@
+const xml2js = require("xml2js");
 module.exports = {
     name: 'bgg-collection',
     description: 'Search Boardgamegeek for collection info. Args: <username>',
@@ -58,31 +59,25 @@ module.exports = {
     bggCollection: async function(username) {
         const
             cache_type = 'bgg_collection',
-            cache = await this.cacheGet(cache_type, username);
+            cache = await this.cacheGet(cache_type, username),
+            fetch = require('node-fetch'),
+            xml2js = require('xml2js'),
+            parser = new xml2js.Parser();
 
         if(cache !== false) {
             return Promise.resolve(cache);
         }
 
-        const
-            params = {
-                username: username
-            },
-            bgg = require('bgg')({
-                toJSONConfig: {
-                    object: true,
-                    sanitize: false
-                }
-            });
-
-        return bgg('collection', params).then(
-           result => {
+        return fetch('https://boardgamegeek.com/xmlapi2/collection?username='+username).then(async response => {
                 //First time collection requests return 202 where it builds results and you try again later.
-                if(result.hasOwnProperty('message')) {
+                if(response.status === 202) {
                     throw 'Building results';
                 }
                 else {
+                    const content = await response.text();
+                    const result = await parser.parseStringPromise(content);
                     this.cacheSet(cache_type, username, result);
+
                     return result;
                 }
             }
@@ -106,19 +101,21 @@ module.exports = {
             want_to_play = 0;
 
         result.items.item.forEach(item => {
-            if(item.status.own) {
+            const itemStatus = item.status[0]['$'];
+
+            if(itemStatus.own === '1') {
                 owned++;
             }
 
-            if(item.status.fortrade) {
+            if(itemStatus.fortrade === '1') {
                 for_trade++;
             }
 
-            if(item.status.wanttoplay) {
+            if(itemStatus.wanttoplay === '1') {
                 want_to_play++;
             }
 
-            if(item.status.wanttobuy) {
+            if(itemStatus.wanttobuy === '1') {
                 want_to_buy++;
             }
         });
@@ -131,7 +128,7 @@ module.exports = {
             .addFields(
                 {
                     name: 'Total',
-                    value: result.items.totalitems,
+                    value: result.items['$'].totalitems,
                     inline: true
                 },
                 {
@@ -164,7 +161,7 @@ module.exports = {
      * @param {String} username
      */
     collectionPrintEmbed: function(result, message, username) {
-        if(typeof result === 'object' && result.items.totalitems > 0) {
+        if(typeof result === 'object' && result.items['$'].totalitems > 0) {
             message.channel.send(this.collectionToEmbed(result, username));
         }
         else {
