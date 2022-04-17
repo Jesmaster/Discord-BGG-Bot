@@ -176,7 +176,9 @@ module.exports = {
             this.bggThing(bggSearchResult.thing_id)
                 .then(result => {
                     message.delete();
-                    message.channel.send(this.itemToSearchEmbed(result.items.item[0],  message.author));
+                    message.channel.send({
+                        embeds: [this.itemToSearchEmbed(result.items.item[0],  message.author)]
+                    });
                 });
         }
         else {
@@ -244,7 +246,7 @@ module.exports = {
             this.bggThing(bggSearchResult.thing_id)
                 .then(result => {
                     let embed = this.itemToSuggestEmbed(result.items.item[0], message.author);
-                    message.channel.send(embed).then(embedMessage => {
+                    message.channel.send({ embeds: [embed] }).then(embedMessage => {
                         embedMessage.react("👍");
                         embedMessage.react("📖");
                         embedMessage.react("❌");

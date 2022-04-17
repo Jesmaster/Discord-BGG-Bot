@@ -3,9 +3,15 @@ require('dotenv').config();
 const
     fs = require('fs'),
     Discord = require('discord.js'),
+    { Intents } = Discord,
     prefix = '!',
     token = process.env.TOKEN,
-    client = new Discord.Client();
+    client = new Discord.Client({
+        intents: [
+            Intents.FLAGS.GUILDS,
+            Intents.FLAGS.GUILD_MESSAGES,
+        ]
+    });
 
 client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
@@ -22,7 +28,7 @@ client.on('ready', () => {
     client.user.setActivity('!bgg', {type: 'LISTENING'});
 });
 
-client.on('message',  message => handleMessage(message));
+client.on('messageCreate',  message => handleMessage(message));
 
 client.login(token);
 

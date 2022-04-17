@@ -162,7 +162,7 @@ module.exports = {
      */
     collectionPrintEmbed: function(result, message, username) {
         if(typeof result === 'object' && result.items['$'].totalitems > 0) {
-            message.channel.send(this.collectionToEmbed(result, username));
+            message.channel.send({ embeds: [this.collectionToEmbed(result, username)] });
         }
         else {
             message.channel.send(`No results found for "${username}".`);
