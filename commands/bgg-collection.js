@@ -133,22 +133,22 @@ module.exports = {
                 },
                 {
                     name: 'Owned',
-                    value: owned,
+                    value: `${owned}`,
                     inline: true
                 },
                 {
                     name: 'For Trade',
-                    value: for_trade,
+                    value: `${for_trade}`,
                     inline: true
                 },
                 {
                     name: 'Want To Play',
-                    value: want_to_play,
+                    value: `${want_to_play}`,
                     inline: true
                 },
                 {
                     name: 'Want to Buy',
-                    value: want_to_buy,
+                    value: `${want_to_buy}`,
                     inline: true
                 }
             )
