@@ -176,7 +176,9 @@ module.exports = {
             this.bggThing(bggSearchResult.thing_id)
                 .then(result => {
                     message.delete();
-                    message.channel.send(this.itemToSearchEmbed(result.items.item[0],  message.author));
+                    message.channel.send({
+                        embeds: [this.itemToSearchEmbed(result.items.item[0],  message.author)]
+                    });
                 });
         }
         else {
@@ -244,7 +246,7 @@ module.exports = {
             this.bggThing(bggSearchResult.thing_id)
                 .then(result => {
                     let embed = this.itemToSuggestEmbed(result.items.item[0], message.author);
-                    message.channel.send(embed).then(embedMessage => {
+                    message.channel.send({ embeds: [embed] }).then(embedMessage => {
                         embedMessage.react("👍");
                         embedMessage.react("📖");
                         embedMessage.react("❌");
@@ -254,7 +256,7 @@ module.exports = {
                         const filter = (reaction, user) => {
                             return ['👍', "📖"].includes(reaction.emoji.name) && !user.bot;
                         };
-                        const collector = embedMessage.createReactionCollector(filter, { dispose: true, idle: time });
+                        const collector = embedMessage.createReactionCollector({ filter, dispose: true, idle: time });
 
                         collector
                             .on('collect', (reaction, user) => {
@@ -272,7 +274,7 @@ module.exports = {
                                 else {
                                     changedEmbed.fields[field_delta].value += username;
                                 }
-                                embedMessage.edit(changedEmbed);
+                                embedMessage.edit({ embeds: [changedEmbed] });
 
                                 embed = changedEmbed;
                         })
@@ -291,7 +293,7 @@ module.exports = {
                                     changedEmbed.fields[field_delta].value = blank_char;
                                 }
 
-                                embedMessage.edit(changedEmbed);
+                                embedMessage.edit({ embeds: [changedEmbed] });
 
                                 embed = changedEmbed;
                         })
@@ -300,13 +302,13 @@ module.exports = {
                                 embedMessage.reactions.removeAll();
                                 let changedEmbed = new Discord.MessageEmbed(embed);
                                 embed.setFooter('Reactions have been closed off for this suggestion.');
-                                embedMessage.edit(embed);
+                                embedMessage.edit({ embeds: [embed] });
                             });
 
                         const deleteFilter = (reaction, user) => {
                             return reaction.emoji.name == '❌' && user.id === message.author.id;
                         };
-                        const deleteCollector = embedMessage.createReactionCollector(deleteFilter, {});
+                        const deleteCollector = embedMessage.createReactionCollector({ filter: deleteFilter });
                         deleteCollector.on('collect', () => {
                             collector.stop();
                             deleteCollector.stop();
