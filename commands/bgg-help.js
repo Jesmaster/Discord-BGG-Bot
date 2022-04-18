@@ -42,7 +42,7 @@ module.exports = {
     execute: async function(message, args) {
         this.helpEmbed(message).then(embed => {
             message.delete();
-            message.channel.send(embed);
+            message.channel.send({ embeds: [embed] });
         });
     }
 }

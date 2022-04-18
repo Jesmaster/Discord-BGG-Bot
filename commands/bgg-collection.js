@@ -133,22 +133,22 @@ module.exports = {
                 },
                 {
                     name: 'Owned',
-                    value: owned,
+                    value: `${owned}`,
                     inline: true
                 },
                 {
                     name: 'For Trade',
-                    value: for_trade,
+                    value: `${for_trade}`,
                     inline: true
                 },
                 {
                     name: 'Want To Play',
-                    value: want_to_play,
+                    value: `${want_to_play}`,
                     inline: true
                 },
                 {
                     name: 'Want to Buy',
-                    value: want_to_buy,
+                    value: `${want_to_buy}`,
                     inline: true
                 }
             )
@@ -162,7 +162,7 @@ module.exports = {
      */
     collectionPrintEmbed: function(result, message, username) {
         if(typeof result === 'object' && result.items['$'].totalitems > 0) {
-            message.channel.send(this.collectionToEmbed(result, username));
+            message.channel.send({ embeds: [this.collectionToEmbed(result, username)] });
         }
         else {
             message.channel.send(`No results found for "${username}".`);
