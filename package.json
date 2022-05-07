@@ -24,17 +24,17 @@
   "author": "Jesmaster",
   "license": "ISC",
   "dependencies": {
-    "@keyv/redis": "^2.2.3",
+    "@keyv/redis": "^2.3.4",
     "discord.js": "^13.6.0",
-    "dotenv": "^8.2.0",
+    "dotenv": "^16.0.0",
     "fs": "0.0.1-security",
     "he": "^1.2.0",
-    "keyv": "^4.1.1",
+    "keyv": "^4.2.2",
     "node-fetch": "^2.6.1",
     "xml2js": "^0.4.23"
   },
   "devDependencies": {
     "eyes": "^0.1.8",
-    "mocha": "^9.2.0"
+    "mocha": "^10.0.0"
   }
 }

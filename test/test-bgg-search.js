@@ -8,10 +8,9 @@ let bggThingResult;
 let embed;
 let user = {
     username: 'Jesmaster',
-    avatarURL: function() {
-        return '';
-    }
-}
+    avatarURL: () => '',
+    displayAvatarURL: () => '',
+};
 
 mocha.describe('itemToSearchEmbed', function() {
     mocha.before(function(done) {

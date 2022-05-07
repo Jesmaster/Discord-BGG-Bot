@@ -150,7 +150,7 @@ module.exports = {
             .setURL(`https://boardgamegeek.com/${item['$'].type}/${item['$'].id}`)
             .setThumbnail(item.thumbnail[0])
             .setDescription(he.decode(item.description[0]).substr(0, 200)+'...')
-            .setAuthor(user.username, user.avatarURL())
+            .setAuthor({ name: user.username, url: user.avatarURL(), iconURL: user.displayAvatarURL() })
             .addFields(
                 {
                     name: ':hash: Number of Players',
@@ -203,7 +203,7 @@ module.exports = {
             .setThumbnail(item.thumbnail[0])
             .setDescription(he.decode(item.description[0]).substr(0, 200)+'...')
             .setFooter("( 👍 Interested | 📖 Can Teach | ❌ End Suggestion )")
-            .setAuthor(user.username, user.avatarURL())
+            .setAuthor({ name: user.username, url: user.avatarURL(), iconURL: user.displayAvatarURL() })
             .addFields(
                 {
                     name: ':hash: Number of Players',

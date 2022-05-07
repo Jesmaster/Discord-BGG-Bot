@@ -88,10 +88,12 @@ module.exports = {
      *
      * @param {Object} result
      * @param {string} username
+     * @param {module:"discord.js".Message} message
      * @return {module:"discord.js".MessageEmbed}
      */
-    collectionToEmbed: function(result, username) {
+    collectionToEmbed: function(result, username, message) {
         const Discord = require('discord.js');
+        const { author: user } = message;
 
         let collection_url = `https://boardgamegeek.com/collection/user/${username}`;
         let
@@ -125,6 +127,7 @@ module.exports = {
             .setTitle(username + '\'s collection')
             .setURL(collection_url)
             .setDescription(collection_url)
+            .setAuthor({ name: user.username, url: user.avatarURL(), iconURL: user.displayAvatarURL() })
             .addFields(
                 {
                     name: 'Total',
@@ -162,7 +165,7 @@ module.exports = {
      */
     collectionPrintEmbed: function(result, message, username) {
         if(typeof result === 'object' && result.items['$'].totalitems > 0) {
-            message.channel.send({ embeds: [this.collectionToEmbed(result, username)] });
+            message.channel.send({ embeds: [this.collectionToEmbed(result, username, message)] });
         }
         else {
             message.channel.send(`No results found for "${username}".`);
