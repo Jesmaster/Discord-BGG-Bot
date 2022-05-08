@@ -5,6 +5,11 @@ const command = require(`../commands/bgg-collection`);
 
 let bggCollectionResult;
 let embed;
+let user = {
+    username: 'Jesmaster',
+    avatarURL: () => '',
+    displayAvatarURL: () => '',
+};
 
 mocha.describe('collectionToEmbed', function() {
     mocha.before(function(done) {
@@ -12,7 +17,7 @@ mocha.describe('collectionToEmbed', function() {
             if (err) throw err;
             bggCollectionResult = JSON.parse(fileContents);
             // noinspection JSPotentiallyInvalidTargetOfIndexedPropertyAccess
-            embed = command.collectionToEmbed(bggCollectionResult, 'jesmaster');
+            embed = command.collectionToEmbed(bggCollectionResult, 'jesmaster', user);
             done();
         });
     });

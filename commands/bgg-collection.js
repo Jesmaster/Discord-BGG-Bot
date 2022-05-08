@@ -1,9 +1,15 @@
+const {SlashCommandBuilder} = require("@discordjs/builders");
 const xml2js = require("xml2js");
+
 module.exports = {
-    name: 'bgg-collection',
-    description: 'Search Boardgamegeek for collection info. Args: <username>',
-    usage: '<username>',
-    args: true,
+    data: new SlashCommandBuilder()
+        .setName('collection')
+        .setDescription('Search Boardgamegeek for collection info. Args: <username>')
+        .addStringOption(option =>
+            option.setName('username')
+                .setDescription('The username for the BGG collection')
+                .setRequired(true)
+        ),
     cache_ttl: 1000 * 60 * 60,
     /**
      * Pull from BGG Bot Cache
@@ -85,12 +91,9 @@ module.exports = {
     },
     /**
      * Create Discord Embed from BGG collection
-     *
-     * @param {Object} result
-     * @param {string} username
      * @return {module:"discord.js".MessageEmbed}
      */
-    collectionToEmbed: function(result, username) {
+    collectionToEmbed: function(result, username, user) {
         const Discord = require('discord.js');
 
         let collection_url = `https://boardgamegeek.com/collection/user/${username}`;
@@ -125,6 +128,7 @@ module.exports = {
             .setTitle(username + '\'s collection')
             .setURL(collection_url)
             .setDescription(collection_url)
+            .setAuthor({ name: user.username, url: user.avatarURL(), iconURL: user.displayAvatarURL() })
             .addFields(
                 {
                     name: 'Total',
@@ -155,36 +159,28 @@ module.exports = {
     },
     /**
      * Send collection embed to channel
-     *
-     * @param {Object} result
-     * @param {module:"discord.js".Message} message
-     * @param {String} username
      */
-    collectionPrintEmbed: function(result, message, username) {
+    collectionPrintEmbed: function(result, interaction, username) {
+        const { user } = interaction.member;
         if(typeof result === 'object' && result.items['$'].totalitems > 0) {
-            message.channel.send({ embeds: [this.collectionToEmbed(result, username)] });
+            interaction.reply({ embeds: [this.collectionToEmbed(result, username, user)] });
         }
         else {
-            message.channel.send(`No results found for "${username}".`);
+            interaction.reply(`No results found for "${username}".`);
         }
     },
     /**
      * Execute Discord Command
-     *
-     * @param {module:"discord.js".Message} message
-     * @param {Array} args
-     * @param {Object} commandOptions
      * @return {Promise<void>}
      */
-    execute: async function (message, args, commandOptions) {
-        let current = this;
-        let username = args[0].toLowerCase();
+    execute: async function (interaction) {
+        const current = this;
+        const username = interaction.options.getString('username');
 
         current.bggCollection(username)
             .then(result => {
                 console.log(`Collection results found for ${username}`);
-                message.delete();
-                current.collectionPrintEmbed(result, message, username)
+                current.collectionPrintEmbed(result, interaction, username)
             })
             .catch(async function(err) {
                 if(err === 'Building results') {
@@ -195,7 +191,7 @@ module.exports = {
                     current.bggCollection(username)
                         .then(result => {
                             console.log(`Collection results found for ${username}`);
-                            current.collectionPrintEmbed(result, message, username)
+                            current.collectionPrintEmbed(result, interaction, username)
                         });
                 }
                 else {

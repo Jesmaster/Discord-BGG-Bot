@@ -1,21 +1,31 @@
+const {SlashCommandBuilder} = require("@discordjs/builders");
 const he = require("he");
+
 module.exports = {
-    name: 'bgg-search',
-    description: 'Search Boardgamegeek for game info. Args: <game_name>',
-    usage: '<game_name>',
-    args: true,
+    data: new SlashCommandBuilder()
+        .setName('search')
+        .setDescription('Search Boardgamegeek for game info. Args: <game_name>')
+        .addStringOption(option =>
+            option.setName('name')
+                .setDescription('The name of the game you want to search for.')
+                .setRequired(true)
+        )
+        .addStringOption(option =>
+            option.setName('suggest')
+                .setDescription('Suggest to play this game?')
+                .addChoices({
+                    name: 'Suggest to play a game.',
+                    value: 'suggest',
+                })
+        ),
     cache_ttl: 1000 * 60 * 60 * 24,
     /**
      * Preforms BGG API search call.
-     *
-     * @param {Array} args
-     *
      * @return {Promise<JSON>}
      */
-    bggSearch: async function(args) {
+    bggSearch: async function(name) {
         const
-            search_query = args.join(' '),
-            searchParams = new URLSearchParams(JSON.stringify({query: search_query})),
+            searchParams = new URLSearchParams(JSON.stringify({query: name})),
             query = searchParams.toString(),
             cache_type = 'bgg_search',
             cache = await this.cacheGet(cache_type, query),
@@ -25,7 +35,7 @@ module.exports = {
             return Promise.resolve(cache);
         }
 
-        return fetch('https://boardgamegeek.com/search/boardgame?q='+search_query, {
+        return fetch('https://boardgamegeek.com/search/boardgame?q='+name, {
             headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Accept-Language': 'en-US,en;q=0.9'
@@ -150,7 +160,7 @@ module.exports = {
             .setURL(`https://boardgamegeek.com/${item['$'].type}/${item['$'].id}`)
             .setThumbnail(item.thumbnail[0])
             .setDescription(he.decode(item.description[0]).substr(0, 200)+'...')
-            .setAuthor(user.username, user.avatarURL())
+            .setAuthor({ name: user.username, url: user.avatarURL(), iconURL: user.displayAvatarURL() })
             .addFields(
                 {
                     name: ':hash: Number of Players',
@@ -166,23 +176,16 @@ module.exports = {
     },
     /**
      * Send game embed to channel given thing_id
-     *
-     * @param {Object} bggSearchResult
-     * @param {module:"discord.js".Message} message
-     * @param {Array} args
      */
-    thingIdToSearchEmbed: async function(bggSearchResult, message, args) {
+    thingIdToSearchEmbed: async function(bggSearchResult, interaction) {
         if(bggSearchResult.found) {
-            this.bggThing(bggSearchResult.thing_id)
-                .then(result => {
-                    message.delete();
-                    message.channel.send({
-                        embeds: [this.itemToSearchEmbed(result.items.item[0],  message.author)]
-                    });
-                });
+            const result = await this.bggThing(bggSearchResult.thing_id);
+            await interaction.reply({
+                embeds: [this.itemToSearchEmbed(result.items.item[0],  interaction.member.user)]
+            });
         }
         else {
-            await message.channel.send(`No results found for "${args.join(' ')}".`);
+            await interaction.reply(`No results found for "${interaction.options.getString('name')}".`);
         }
     },
     /**
@@ -202,8 +205,8 @@ module.exports = {
             .setURL(`https://boardgamegeek.com/${item['$'].type}/${item['$'].id}`)
             .setThumbnail(item.thumbnail[0])
             .setDescription(he.decode(item.description[0]).substr(0, 200)+'...')
-            .setFooter("( 👍 Interested | 📖 Can Teach | ❌ End Suggestion )")
-            .setAuthor(user.username, user.avatarURL())
+            .setFooter({ text: '( 👍 Interested | 📖 Can Teach | ❌ End Suggestion )'})
+            .setAuthor({ name: user.username, url: user.avatarURL(), iconURL: user.displayAvatarURL() })
             .addFields(
                 {
                     name: ':hash: Number of Players',
@@ -234,19 +237,15 @@ module.exports = {
     },
     /**
      * Send game embed to channel given thing_id
-     *
-     * @param {Object} bggSearchResult
-     * @param {module:"discord.js".Message} message
-     * @param {Array} args
      */
-    thingIdToSuggestEmbed: async function(bggSearchResult, message, args) {
+    thingIdToSuggestEmbed: async function(bggSearchResult, interaction) {
         const Discord = require('discord.js');
 
         if(bggSearchResult.found) {
             this.bggThing(bggSearchResult.thing_id)
                 .then(result => {
-                    let embed = this.itemToSuggestEmbed(result.items.item[0], message.author);
-                    message.channel.send({ embeds: [embed] }).then(embedMessage => {
+                    let embed = this.itemToSuggestEmbed(result.items.item[0], interaction.member.user);
+                    interaction.reply({ embeds: [embed], fetchReply: true }).then(embedMessage => {
                         embedMessage.react("👍");
                         embedMessage.react("📖");
                         embedMessage.react("❌");
@@ -301,12 +300,12 @@ module.exports = {
                                 deleteCollector.stop();
                                 embedMessage.reactions.removeAll();
                                 let changedEmbed = new Discord.MessageEmbed(embed);
-                                embed.setFooter('Reactions have been closed off for this suggestion.');
+                                embed.setFooter({ text: 'Reactions have been closed off for this suggestion.' });
                                 embedMessage.edit({ embeds: [embed] });
                             });
 
                         const deleteFilter = (reaction, user) => {
-                            return reaction.emoji.name == '❌' && user.id === message.author.id;
+                            return reaction.emoji.name == '❌' && user.id === interaction.member.user.id;
                         };
                         const deleteCollector = embedMessage.createReactionCollector({ filter: deleteFilter });
                         deleteCollector.on('collect', () => {
@@ -315,32 +314,28 @@ module.exports = {
                         });
 
                     }).catch(err => console.error(err));
-                    message.delete();
                 });
         }
         else {
-            await message.channel.send(`No results found for "${args.join(' ')}".`);
+            await interaction.reply(`No results found for "${interaction.options.getString('name')}".`);
         }
     },
     /**
      * Execute Discord Command
-     *
-     * @param {module:"discord.js".Message} message
-     * @param {Array} args
-     * @param {Object} commandOptions
      * @return {Promise<void>}
      */
-    execute: async function(message, args, commandOptions) {
-        this.bggSearch(args)
+    execute: async function(interaction) {
+        const name = interaction.options.getString('name');
+        const suggest = interaction.options.getString('suggest');
+
+        this.bggSearch(name)
             .then(result => this.thingIdFromBggSearchCall(result))
             .then(bggSearchResult => {
-                switch (commandOptions.type) {
-                    case 'search':
-                        this.thingIdToSearchEmbed(bggSearchResult, message, args);
-                        break;
-                    case 'suggest':
-                        this.thingIdToSuggestEmbed(bggSearchResult, message, args);
-                        break;
+                if (suggest === 'suggest') {
+                    this.thingIdToSuggestEmbed(bggSearchResult, interaction);
+                }
+                else {
+                    this.thingIdToSearchEmbed(bggSearchResult, interaction);
                 }
             })
     },
