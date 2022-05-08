@@ -4,7 +4,6 @@ require('dotenv').config();
 
 const
     fs = require('fs'),
-    prefix = '!',
     { token } = require('./config.json'),
     client = new Client({
         intents: [
