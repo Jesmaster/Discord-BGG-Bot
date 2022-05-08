@@ -17,7 +17,7 @@ mocha.describe('collectionToEmbed', function() {
             if (err) throw err;
             bggCollectionResult = JSON.parse(fileContents);
             // noinspection JSPotentiallyInvalidTargetOfIndexedPropertyAccess
-            embed = command.collectionToEmbed(bggCollectionResult, 'jesmaster', { author: user });
+            embed = command.collectionToEmbed(bggCollectionResult, 'jesmaster', user);
             done();
         });
     });

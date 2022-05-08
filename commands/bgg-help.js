@@ -1,14 +1,15 @@
+const {SlashCommandBuilder} = require("@discordjs/builders");
+
 module.exports = {
-    name: 'bgg-help',
-    description: 'Get help for bgg bot commands',
-    usage: '',
-    args: false,
+    data: new SlashCommandBuilder()
+        .setName('help')
+        .setDescription('Get help for bgg bot commands'),
     /**
      * Create Discord Embed for help
      *
      * @return {module:"discord.js".MessageEmbed}
      */
-    helpEmbed: async function(message) {
+    helpEmbed: (client) => {
         const Discord = require('discord.js');
 
         return new Discord.MessageEmbed()
@@ -17,32 +18,31 @@ module.exports = {
             .addFields(
                 {
                   name: 'Stats',
-                  value: 'BGG Bot is on '+message.client.guilds.cache.size+' servers'
+                  value: 'BGG Bot is on '+client.guilds.cache.size+' servers'
                 },
                 {
                     name: 'Collection',
-                    value: 'Get collection information for a bgg user.\nUsage: `!bgg collection <username>`.\nExample: `!bgg collection jesmaster`'
+                    value: 'Get collection information for a bgg user.\nUsage: `/collection <bgg_username>`.'
                 },                {
                     name: 'Search',
-                    value: 'Get information for a board game from bgg.\nUsage: `!bgg search <game_name>`.\nExample: `!bgg search the resistance`'
+                    value: 'Get information for a board game from bgg.\nUsage: `/search <game_name>` and leave the extra option blank'
                 },
                 {
                     name: 'Suggest',
-                    value: 'Get information for a board game from bgg and allow emjoi reactions for people looking to play.\nUsage: `!bgg suggest <game_name>`.\nExample: `!bgg suggest the resistance`'
+                    value: 'Get information for a board game from bgg and allow emjoi reactions for people looking to play.\nUsage: type `/search <game_name>` and tab to option "Suggest to play a game.".'
                 }
             );
     },
     /**
      * Execute Discord Command
      *
-     * @param {module:"discord.js".Message} message
-     * @param {Array} args
+     * @param {module:"discord.js".Interaction} interaction
      * @return {Promise<void>}
      */
-    execute: async function(message, args) {
-        this.helpEmbed(message).then(embed => {
-            message.delete();
-            message.channel.send({ embeds: [embed] });
-        });
+    execute: async function(interaction) {
+        console.log(interaction.message);
+        const { client } = interaction;
+
+        await interaction.reply({ embeds: [this.helpEmbed(client)] });
     }
 }

@@ -108,3 +108,6 @@ dist
 
 #Bot cache files
 .bgg_bot_cache
+
+#config
+config.json
