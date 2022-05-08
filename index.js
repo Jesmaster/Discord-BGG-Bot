@@ -4,7 +4,7 @@ require('dotenv').config();
 
 const
     fs = require('fs'),
-    { token } = process.env.TOKEN,
+    token = process.env.TOKEN,
     client = new Client({
         intents: [
             Intents.FLAGS.GUILDS,
