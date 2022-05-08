@@ -111,3 +111,4 @@ dist
 
 #config
 config.json
+config.prod.json
