@@ -7,7 +7,7 @@ Boardgamegeek Integration Bot for Discord
 
 **Invite with the new link below:**
 
-**[Click here](https://discord.com/oauth2/authorize?client_id=696045552625778810&scope=bot&permissions=2147576896)** to add the bot to your server.
+**[Click here](https://discord.com/oauth2/authorize?client_id=696045552625778810&scope=bot%20applications.commands&permissions=2147576896)** to add the bot to your server.
 
 Leave a review on my **[top.gg listing](https://top.gg/bot/696045552625778810)**
 
