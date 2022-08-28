@@ -8,8 +8,8 @@ let bggThingResult;
 let embed;
 let user = {
     username: 'Jesmaster',
-    avatarURL: () => '',
-    displayAvatarURL: () => '',
+    avatarURL: () => null,
+    displayAvatarURL: () => null,
 };
 
 mocha.describe('itemToSearchEmbed', function() {
@@ -18,7 +18,7 @@ mocha.describe('itemToSearchEmbed', function() {
             if (err) throw err;
             bggThingResult = JSON.parse(fileContents);
             // noinspection JSPotentiallyInvalidTargetOfIndexedPropertyAccess
-            embed = command.itemToSearchEmbed(bggThingResult.items.item[0], user);
+            embed = command.itemToSearchEmbed(bggThingResult.items.item[0], user).toJSON();
             done();
         });
     });

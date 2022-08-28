@@ -1,5 +1,4 @@
 const {SlashCommandBuilder} = require("@discordjs/builders");
-const xml2js = require("xml2js");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -16,7 +15,7 @@ module.exports = {
      *
      * @param {string} cache_type
      * @param {string} cache_key
-     * @return {JSON|boolean}
+     * @return {Promise<JSON|boolean>}
      */
     cacheGet: async function(cache_type, cache_key) {
         const
@@ -60,41 +59,45 @@ module.exports = {
      *
      * @param {String} username
      *
+     * @throws {string}
      * @return {Promise<JSON>}
      */
     bggCollection: async function(username) {
         const
             cache_type = 'bgg_collection',
             cache = await this.cacheGet(cache_type, username),
-            fetch = require('node-fetch'),
+            axios = require('axios').default,
             xml2js = require('xml2js'),
             parser = new xml2js.Parser();
 
         if(cache !== false) {
-            return Promise.resolve(cache);
+            return cache;
         }
 
-        return fetch('https://boardgamegeek.com/xmlapi2/collection?username='+username).then(async response => {
-                //First time collection requests return 202 where it builds results and you try again later.
-                if(response.status === 202) {
-                    throw 'Building results';
-                }
-                else {
-                    const content = await response.text();
-                    const result = await parser.parseStringPromise(content);
-                    this.cacheSet(cache_type, username, result);
+        const response = await axios('https://boardgamegeek.com/xmlapi2/collection?username='+username);
 
-                    return result;
-                }
-            }
-        );
+        //First time collection requests return 202 where it builds results and you try again later.
+        if(response.status === 202) {
+            return 'Building results';
+        }
+        else {
+            const { data } = response;
+            const result = await parser.parseStringPromise(data);
+            await this.cacheSet(cache_type, username, result);
+
+            return result;
+        }
     },
     /**
      * Create Discord Embed from BGG collection
-     * @return {module:"discord.js".MessageEmbed}
+     * 
+     * @param {Object} results
+     * @param {string} username
+     * @param {User} user
+     * @return {import("discord.js").EmbedBuilder}
      */
     collectionToEmbed: function(result, username, user) {
-        const Discord = require('discord.js');
+        const { EmbedBuilder, User } = require('discord.js');
 
         let collection_url = `https://boardgamegeek.com/collection/user/${username}`;
         let
@@ -123,7 +126,7 @@ module.exports = {
             }
         });
 
-        return new Discord.MessageEmbed()
+        return new EmbedBuilder()
             .setColor('#3f3a60')
             .setTitle(username + '\'s collection')
             .setURL(collection_url)
@@ -159,44 +162,38 @@ module.exports = {
     },
     /**
      * Send collection embed to channel
+     * 
+     * @param {Object} result
+     * @param {import("discord.js").Interaction} interaction
+     * @param {string} username
      */
     collectionPrintEmbed: function(result, interaction, username) {
-        const { user } = interaction.member;
         if(typeof result === 'object' && result.items['$'].totalitems > 0) {
-            interaction.reply({ embeds: [this.collectionToEmbed(result, username, user)] });
+            interaction.editReply({ embeds: [this.collectionToEmbed(result, username, interaction.member.user)] });
         }
         else {
-            interaction.reply(`No results found for "${username}".`);
+            interaction.editReply(`No results found for "${username}".`);
         }
     },
     /**
      * Execute Discord Command
+     * @param {import("discord.js").Interaction} interaction
      * @return {Promise<void>}
      */
     execute: async function (interaction) {
-        const current = this;
+        await interaction.deferReply();
         const username = interaction.options.getString('username');
+        
+        let result = await this.bggCollection(username);
+        if (result === 'Building results') {
+            console.log(`Building collection results for ${username}`);
 
-        current.bggCollection(username)
-            .then(result => {
-                console.log(`Collection results found for ${username}`);
-                current.collectionPrintEmbed(result, interaction, username)
-            })
-            .catch(async function(err) {
-                if(err === 'Building results') {
-                    console.log(`Building collection results for ${username}`);
+            //Wait 2 seconds and then attempt call again.
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+            result = await this.bggCollection(username);
+        }
 
-                    //Wait 2 seconds and then attempt call again. If it's still not ready
-                    await new Promise((resolve) => setTimeout(resolve, 2000));
-                    current.bggCollection(username)
-                        .then(result => {
-                            console.log(`Collection results found for ${username}`);
-                            current.collectionPrintEmbed(result, interaction, username)
-                        });
-                }
-                else {
-                    throw err;
-                }
-            });
+        console.log(`Collection results found for ${username}`);
+        this.collectionPrintEmbed(result, interaction, username);
     },
 }

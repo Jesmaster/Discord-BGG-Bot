@@ -7,12 +7,12 @@ module.exports = {
     /**
      * Create Discord Embed for help
      *
-     * @return {module:"discord.js".MessageEmbed}
+     * @return {module:"discord.js".EmbedBuilder}
      */
     helpEmbed: (client) => {
-        const Discord = require('discord.js');
+        const { EmbedBuilder } = require('discord.js');
 
-        return new Discord.MessageEmbed()
+        return new EmbedBuilder()
             .setColor('#3f3a60')
             .setTitle('BGG Bot Commands')
             .addFields(
@@ -40,7 +40,6 @@ module.exports = {
      * @return {Promise<void>}
      */
     execute: async function(interaction) {
-        console.log(interaction.message);
         const { client } = interaction;
 
         await interaction.reply({ embeds: [this.helpEmbed(client)] });
