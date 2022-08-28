@@ -7,8 +7,8 @@ let bggCollectionResult;
 let embed;
 let user = {
     username: 'Jesmaster',
-    avatarURL: () => '',
-    displayAvatarURL: () => '',
+    avatarURL: () => null,
+    displayAvatarURL: () => null,
 };
 
 mocha.describe('collectionToEmbed', function() {
@@ -17,7 +17,7 @@ mocha.describe('collectionToEmbed', function() {
             if (err) throw err;
             bggCollectionResult = JSON.parse(fileContents);
             // noinspection JSPotentiallyInvalidTargetOfIndexedPropertyAccess
-            embed = command.collectionToEmbed(bggCollectionResult, 'jesmaster', user);
+            embed = command.collectionToEmbed(bggCollectionResult, 'jesmaster', user).toJSON();
             done();
         });
     });

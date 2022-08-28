@@ -1,5 +1,4 @@
 const {SlashCommandBuilder} = require("@discordjs/builders");
-const he = require("he");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -29,27 +28,27 @@ module.exports = {
             query = searchParams.toString(),
             cache_type = 'bgg_search',
             cache = await this.cacheGet(cache_type, query),
-            fetch = require('node-fetch');
+            axios = require('axios').default;
+
+        console.log(`Looking up search: ${name}...`);
 
         if(cache !== false) {
-            return Promise.resolve(cache);
+            console.log(`Found cached entry for ${name}`);
+            return cache;
         }
 
-        return fetch('https://boardgamegeek.com/search/boardgame?q='+name, {
+        const response = await axios('https://boardgamegeek.com/search/boardgame?q='+name, {
             headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Accept-Language': 'en-US,en;q=0.9'
             }
-        }).then(
-            response => {
-                return response.json().then (
-                    json => {
-                        this.cacheSet(cache_type, query, json);
-                        return json;
-                    }
-                );
-            }
-        )
+        });
+
+        const { data } = response;
+        console.log(`Found result for ${name}`);
+        await this.cacheSet(cache_type, query, data);
+        
+        return data;
     },
     /**
      * Preforms BGG API thing call.
@@ -62,27 +61,32 @@ module.exports = {
         const
             cache_type = 'bgg_thing',
             cache = await this.cacheGet(cache_type, thing_id),
-            fetch = require('node-fetch'),
+            axios = require('axios').default,
             xml2js = require('xml2js'),
             parser = new xml2js.Parser();
 
+        console.log(`Looking up ${thing_id}...`);
+
         if(cache !== false) {
-            return Promise.resolve(cache);
+            console.log(`Found cached entry for ${thing_id}`);
+            return cache;
         }
 
-        return fetch('https://boardgamegeek.com/xmlapi2/thing?id='+thing_id).then(async response => {
-            const content = await response.text();
-            const result = await parser.parseStringPromise(content);
-            this.cacheSet(cache_type, thing_id, result);
-            return result;
-        });
+        const response = await axios('https://boardgamegeek.com/xmlapi2/thing?id='+thing_id);
+
+        const { data } = response;
+        console.log(`Looked up data for ${thing_id}`);
+        const result = await parser.parseStringPromise(data);
+        await this.cacheSet(cache_type, thing_id, result);
+
+        return result;
     },
     /**
      * Pull from BGG Bot Cache
      *
      * @param {string} cache_type
      * @param {string} cache_key
-     * @return {JSON|boolean}
+     * @return {Promise<JSON|boolean>}
      */
     cacheGet: async function(cache_type, cache_key) {
         const
@@ -147,19 +151,20 @@ module.exports = {
      * Create Discord Embed from BGG thing
      *
      * @param {Object} item
-     * @return {module:"discord.js".MessageEmbed}
+     * @param {User} user
+     * @return {import("discord.js").EmbedBuilder}
      */
     itemToSearchEmbed: function(item, user) {
         const
-            Discord = require('discord.js'),
+            { EmbedBuilder, User } = require('discord.js'),
             he = require('he');
 
-        return new Discord.MessageEmbed()
+        return new EmbedBuilder()
             .setColor('#3f3a60')
             .setTitle(item.name instanceof Array ? item.name[0]['$'].value : item.name['$'].value)
             .setURL(`https://boardgamegeek.com/${item['$'].type}/${item['$'].id}`)
             .setThumbnail(item.thumbnail[0])
-            .setDescription(he.decode(item.description[0]).substr(0, 200)+'...')
+            .setDescription(he.decode(item.description[0]).substring(0, 200)+'...')
             .setAuthor({ name: user.username, url: user.avatarURL(), iconURL: user.displayAvatarURL() })
             .addFields(
                 {
@@ -176,6 +181,9 @@ module.exports = {
     },
     /**
      * Send game embed to channel given thing_id
+     * 
+     * @param {Object} bggSearchResult
+     * @param {import("discord.js").Interaction} interaction
      */
     thingIdToSearchEmbed: async function(bggSearchResult, interaction) {
         if(bggSearchResult.found) {
@@ -192,19 +200,19 @@ module.exports = {
      * Create Discord Embed from BGG thing
      *
      * @param {Object} item
-     * @return {module:"discord.js".MessageEmbed}
+     * @return {module:"discord.js".EmbedBuilder}
      */
     itemToSuggestEmbed: function(item, user) {
         const
-            Discord = require('discord.js'),
+            { EmbedBuilder } = require('discord.js'),
             he = require('he');
 
-        return new Discord.MessageEmbed()
+        return new EmbedBuilder()
             .setColor('#3f3a60')
             .setTitle(item.name instanceof Array ? item.name[0]['$'].value : item.name['$'].value)
             .setURL(`https://boardgamegeek.com/${item['$'].type}/${item['$'].id}`)
             .setThumbnail(item.thumbnail[0])
-            .setDescription(he.decode(item.description[0]).substr(0, 200)+'...')
+            .setDescription(he.decode(item.description[0]).substring(0, 200)+'...')
             .setFooter({ text: '( 👍 Interested | 📖 Can Teach | ❌ End Suggestion )'})
             .setAuthor({ name: user.username, url: user.avatarURL(), iconURL: user.displayAvatarURL() })
             .addFields(
@@ -239,7 +247,7 @@ module.exports = {
      * Send game embed to channel given thing_id
      */
     thingIdToSuggestEmbed: async function(bggSearchResult, interaction) {
-        const Discord = require('discord.js');
+        const { EmbedBuilder } = require('discord.js');
 
         if(bggSearchResult.found) {
             this.bggThing(bggSearchResult.thing_id)
@@ -259,7 +267,7 @@ module.exports = {
 
                         collector
                             .on('collect', (reaction, user) => {
-                                let changedEmbed = new Discord.MessageEmbed(embed);
+                                let { fields } = embed.toJSON();
                                 let username = `<@${user.id}>\n${blank_char}`;
                                 let field_delta = 3;
 
@@ -267,18 +275,19 @@ module.exports = {
                                     field_delta = 4;
                                 }
 
-                                if (changedEmbed.fields[field_delta].value === blank_char) {
-                                    changedEmbed.fields[field_delta].value = username;
+                                if (fields[field_delta].value === blank_char) {
+                                    fields[field_delta].value = username;
                                 }
                                 else {
-                                    changedEmbed.fields[field_delta].value += username;
+                                    fields[field_delta].value += username;
                                 }
-                                embedMessage.edit({ embeds: [changedEmbed] });
 
-                                embed = changedEmbed;
+                                embed.setFields(fields);
+
+                                embedMessage.edit({ embeds: [embed] });
                         })
                             .on('remove', (reaction, user) => {
-                                let changedEmbed = new Discord.MessageEmbed(embed);
+                                let { fields } = embed.toJSON();
                                 let username = `<@${user.id}>\n${blank_char}`;
                                 let field_delta = 3;
 
@@ -286,20 +295,19 @@ module.exports = {
                                     field_delta = 4;
                                 }
 
-                                changedEmbed.fields[field_delta].value = changedEmbed.fields[field_delta].value.replace(username, '');
+                                fields[field_delta].value = fields[field_delta].value.replace(username, '');
 
-                                if (changedEmbed.fields[field_delta].value === '') {
-                                    changedEmbed.fields[field_delta].value = blank_char;
+                                if (fields[field_delta].value === '') {
+                                    fields[field_delta].value = blank_char;
                                 }
 
-                                embedMessage.edit({ embeds: [changedEmbed] });
+                                embed.setFields(fields);
 
-                                embed = changedEmbed;
+                                embedMessage.edit({ embeds: [embed] });
                         })
                             .on('end', collected => {
                                 deleteCollector.stop();
                                 embedMessage.reactions.removeAll();
-                                let changedEmbed = new Discord.MessageEmbed(embed);
                                 embed.setFooter({ text: 'Reactions have been closed off for this suggestion.' });
                                 embedMessage.edit({ embeds: [embed] });
                             });
