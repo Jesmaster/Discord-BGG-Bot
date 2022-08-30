@@ -168,7 +168,14 @@ module.exports = {
      * @param {string} username
      */
     collectionPrintEmbed: function(result, interaction, username) {
-        if(typeof result === 'object' && result.items['$'].totalitems > 0) {
+        const isObject = typeof result === 'object';
+        const hasErrors = result?.errors?.error?.length > 0;
+
+        if (hasErrors) {
+            console.log(new Date().toISOString(), JSON.stringify(result.errors.error));
+        }
+
+        if (isObject && !hasErrors && result.items['$'].totalitems > 0) {
             interaction.editReply({ embeds: [this.collectionToEmbed(result, username, interaction.member.user)] });
         }
         else {
@@ -186,14 +193,14 @@ module.exports = {
         
         let result = await this.bggCollection(username);
         if (result === 'Building results') {
-            console.log(`Building collection results for ${username}`);
+            console.log(new Date().toISOString(), `Building collection results for ${username}`);
 
             //Wait 2 seconds and then attempt call again.
             await new Promise((resolve) => setTimeout(resolve, 2000));
             result = await this.bggCollection(username);
         }
 
-        console.log(`Collection results found for ${username}`);
+        console.log(new Date().toISOString(), `Collection results found for ${username}`);
         this.collectionPrintEmbed(result, interaction, username);
     },
 }

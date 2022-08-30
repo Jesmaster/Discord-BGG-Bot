@@ -30,10 +30,10 @@ module.exports = {
             cache = await this.cacheGet(cache_type, query),
             axios = require('axios').default;
 
-        console.log(`Looking up search: ${name}...`);
+        console.log(new Date().toISOString(), `Looking up search: ${name}...`);
 
         if(cache !== false) {
-            console.log(`Found cached entry for ${name}`);
+            console.log(new Date().toISOString(), `Found cached entry for ${name}`);
             return cache;
         }
 
@@ -45,7 +45,7 @@ module.exports = {
         });
 
         const { data } = response;
-        console.log(`Found result for ${name}`);
+        console.log(new Date().toISOString(), `Found result for ${name}`);
         await this.cacheSet(cache_type, query, data);
         
         return data;
@@ -65,17 +65,17 @@ module.exports = {
             xml2js = require('xml2js'),
             parser = new xml2js.Parser();
 
-        console.log(`Looking up ${thing_id}...`);
+        console.log(new Date().toISOString(), `Looking up ${thing_id}...`);
 
         if(cache !== false) {
-            console.log(`Found cached entry for ${thing_id}`);
+            console.log(new Date().toISOString(), `Found cached entry for ${thing_id}`);
             return cache;
         }
 
         const response = await axios('https://boardgamegeek.com/xmlapi2/thing?id='+thing_id);
 
         const { data } = response;
-        console.log(`Looked up data for ${thing_id}`);
+        console.log(new Date().toISOString(), `Looked up data for ${thing_id}`);
         const result = await parser.parseStringPromise(data);
         await this.cacheSet(cache_type, thing_id, result);
 
