@@ -37,7 +37,7 @@ module.exports = {
             return cache;
         }
 
-        const response = await axios('https://boardgamegeek.com/search/boardgame?q='+name, {
+        const response = await axios('https://boardgamegeek.com/search/boardgame?q='+encodeURI(name), {
             headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Accept-Language': 'en-US,en;q=0.9'

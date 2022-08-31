@@ -1,6 +1,6 @@
 {
   "name": "discord-bgg-bot",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Board Game Geek Discord Bot",
   "main": "index.js",
   "scripts": {
