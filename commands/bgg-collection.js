@@ -74,7 +74,7 @@ module.exports = {
             return cache;
         }
 
-        const response = await axios('https://boardgamegeek.com/xmlapi2/collection?username='+username);
+        const response = await axios('https://boardgamegeek.com/xmlapi2/collection?username='+encodeURI(username));
 
         //First time collection requests return 202 where it builds results and you try again later.
         if(response.status === 202) {
