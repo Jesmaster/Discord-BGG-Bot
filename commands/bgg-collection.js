@@ -192,15 +192,25 @@ module.exports = {
         const username = interaction.options.getString('username');
         
         let result = await this.bggCollection(username);
-        if (result === 'Building results') {
-            console.log(new Date().toISOString(), `Building collection results for ${username}`);
+        let attempts = 1;
+        const max_attemps = 5;
+
+        while (result === 'Building results' && attempts <= max_attemps) {
+            console.log(new Date().toISOString(), `Building collection results for ${username} - Attempt ${attempts}`);
 
             //Wait 2 seconds and then attempt call again.
             await new Promise((resolve) => setTimeout(resolve, 2000));
             result = await this.bggCollection(username);
+            attempts++;
         }
 
-        console.log(new Date().toISOString(), `Collection results found for ${username}`);
+        if (result === 'Building results') {
+            console.log(new Date().toISOString(), `Unable to build collection results after ${attemps} attemps for ${username}`);
+        }
+        else {
+            console.log(new Date().toISOString(), `Collection results found for ${username}`);
+        }
+
         this.collectionPrintEmbed(result, interaction, username);
     },
 }
