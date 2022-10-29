@@ -28,7 +28,7 @@ module.exports = {
             query = searchParams.toString(),
             cache_type = 'bgg_search',
             cache = await this.cacheGet(cache_type, query),
-            axios = require('axios').default;
+            axios = require('axios');
 
         console.log(new Date().toISOString(), `Looking up search: ${name}...`);
 
@@ -61,7 +61,7 @@ module.exports = {
         const
             cache_type = 'bgg_thing',
             cache = await this.cacheGet(cache_type, thing_id),
-            axios = require('axios').default,
+            axios = require('axios'),
             xml2js = require('xml2js'),
             parser = new xml2js.Parser();
 
@@ -247,8 +247,6 @@ module.exports = {
      * Send game embed to channel given thing_id
      */
     thingIdToSuggestEmbed: async function(bggSearchResult, interaction) {
-        const { EmbedBuilder } = require('discord.js');
-
         if(bggSearchResult.found) {
             this.bggThing(bggSearchResult.thing_id)
                 .then(result => {

@@ -66,7 +66,7 @@ module.exports = {
         const
             cache_type = 'bgg_collection',
             cache = await this.cacheGet(cache_type, username),
-            axios = require('axios').default,
+            axios = require('axios'),
             xml2js = require('xml2js'),
             parser = new xml2js.Parser();
 
