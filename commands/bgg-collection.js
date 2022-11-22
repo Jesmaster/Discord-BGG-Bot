@@ -205,7 +205,7 @@ module.exports = {
         }
 
         if (result === 'Building results') {
-            console.log(new Date().toISOString(), `Unable to build collection results after ${attemps} attemps for ${username}`);
+            console.log(new Date().toISOString(), `Unable to build collection results after ${attempts} attemps for ${username}`);
         }
         else {
             console.log(new Date().toISOString(), `Collection results found for ${username}`);
