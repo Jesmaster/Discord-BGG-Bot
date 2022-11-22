@@ -252,73 +252,76 @@ module.exports = {
                 .then(result => {
                     let embed = this.itemToSuggestEmbed(result.items.item[0], interaction.member.user);
                     interaction.reply({ embeds: [embed], fetchReply: true }).then(embedMessage => {
-                        embedMessage.react("👍");
-                        embedMessage.react("📖");
-                        embedMessage.react("❌");
+                        try {
+                            embedMessage.react("👍");
+                            embedMessage.react("📖");
+                            embedMessage.react("❌");
 
-                        const blank_char = '\u200B';
-                        const time = 1000 * 60 * 60 * 24 * 7;
-                        const filter = (reaction, user) => {
-                            return ['👍', "📖"].includes(reaction.emoji.name) && !user.bot;
-                        };
-                        const collector = embedMessage.createReactionCollector({ filter, dispose: true, idle: time });
-
-                        collector
-                            .on('collect', (reaction, user) => {
-                                let { fields } = embed.toJSON();
-                                let username = `<@${user.id}>\n${blank_char}`;
-                                let field_delta = 3;
-
-                                if (reaction.emoji.name === "📖") {
-                                    field_delta = 4;
-                                }
-
-                                if (fields[field_delta].value === blank_char) {
-                                    fields[field_delta].value = username;
-                                }
-                                else {
-                                    fields[field_delta].value += username;
-                                }
-
-                                embed.setFields(fields);
-
-                                embedMessage.edit({ embeds: [embed] });
-                        })
-                            .on('remove', (reaction, user) => {
-                                let { fields } = embed.toJSON();
-                                let username = `<@${user.id}>\n${blank_char}`;
-                                let field_delta = 3;
-
-                                if (reaction.emoji.name === "📖") {
-                                    field_delta = 4;
-                                }
-
-                                fields[field_delta].value = fields[field_delta].value.replace(username, '');
-
-                                if (fields[field_delta].value === '') {
-                                    fields[field_delta].value = blank_char;
-                                }
-
-                                embed.setFields(fields);
-
-                                embedMessage.edit({ embeds: [embed] });
-                        })
-                            .on('end', collected => {
+                            const blank_char = '\u200B';
+                            const time = 1000 * 60 * 60 * 24 * 7;
+                            const filter = (reaction, user) => {
+                                return ['👍', "📖"].includes(reaction.emoji.name) && !user.bot;
+                            };
+                            const collector = embedMessage.createReactionCollector({ filter, dispose: true, idle: time });
+    
+                            collector
+                                .on('collect', (reaction, user) => {
+                                    let { fields } = embed.toJSON();
+                                    let username = `<@${user.id}>\n${blank_char}`;
+                                    let field_delta = 3;
+    
+                                    if (reaction.emoji.name === "📖") {
+                                        field_delta = 4;
+                                    }
+    
+                                    if (fields[field_delta].value === blank_char) {
+                                        fields[field_delta].value = username;
+                                    }
+                                    else {
+                                        fields[field_delta].value += username;
+                                    }
+    
+                                    embed.setFields(fields);
+    
+                                    embedMessage.edit({ embeds: [embed] });
+                            })
+                                .on('remove', (reaction, user) => {
+                                    let { fields } = embed.toJSON();
+                                    let username = `<@${user.id}>\n${blank_char}`;
+                                    let field_delta = 3;
+    
+                                    if (reaction.emoji.name === "📖") {
+                                        field_delta = 4;
+                                    }
+    
+                                    fields[field_delta].value = fields[field_delta].value.replace(username, '');
+    
+                                    if (fields[field_delta].value === '') {
+                                        fields[field_delta].value = blank_char;
+                                    }
+    
+                                    embed.setFields(fields);
+    
+                                    embedMessage.edit({ embeds: [embed] });
+                            })
+                                .on('end', collected => {
+                                    deleteCollector.stop();
+                                    embedMessage.reactions.removeAll();
+                                    embed.setFooter({ text: 'Reactions have been closed off for this suggestion.' });
+                                    embedMessage.edit({ embeds: [embed] });
+                                });
+    
+                            const deleteFilter = (reaction, user) => {
+                                return reaction.emoji.name == '❌' && user.id === interaction.member.user.id;
+                            };
+                            const deleteCollector = embedMessage.createReactionCollector({ filter: deleteFilter });
+                            deleteCollector.on('collect', () => {
+                                collector.stop();
                                 deleteCollector.stop();
-                                embedMessage.reactions.removeAll();
-                                embed.setFooter({ text: 'Reactions have been closed off for this suggestion.' });
-                                embedMessage.edit({ embeds: [embed] });
                             });
-
-                        const deleteFilter = (reaction, user) => {
-                            return reaction.emoji.name == '❌' && user.id === interaction.member.user.id;
-                        };
-                        const deleteCollector = embedMessage.createReactionCollector({ filter: deleteFilter });
-                        deleteCollector.on('collect', () => {
-                            collector.stop();
-                            deleteCollector.stop();
-                        });
-
+                        } catch (error) {
+                            console.error(error);
+                        }
                     }).catch(err => console.error(err));
                 });
         }
