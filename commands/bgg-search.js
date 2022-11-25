@@ -17,7 +17,7 @@ module.exports = {
                     value: 'suggest',
                 })
         ),
-    cache_ttl: 1000 * 60 * 60 * 24,
+    cache_ttl: 1000 * 60 * 60 * 24 * 7,
     /**
      * Preforms BGG API search call.
      * @return {Promise<JSON>}
