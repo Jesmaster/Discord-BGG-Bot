@@ -165,7 +165,7 @@ module.exports = {
             .setURL(`https://boardgamegeek.com/${item['$'].type}/${item['$'].id}`)
             .setThumbnail(item.thumbnail[0])
             .setDescription(he.decode(item.description[0]).substring(0, 200)+'...')
-            .setAuthor({ name: user.username, url: user.avatarURL(), iconURL: user.displayAvatarURL() })
+            .setAuthor(user ? { name: user.username, url: user.avatarURL(), iconURL: user.displayAvatarURL() } : null)
             .addFields(
                 {
                     name: ':hash: Number of Players',
@@ -189,7 +189,7 @@ module.exports = {
         if(bggSearchResult.found) {
             const result = await this.bggThing(bggSearchResult.thing_id);
             await interaction.reply({
-                embeds: [this.itemToSearchEmbed(result.items.item[0],  interaction.member.user)]
+                embeds: [this.itemToSearchEmbed(result.items.item[0],  interaction?.member?.user)]
             });
         }
         else {
@@ -214,7 +214,7 @@ module.exports = {
             .setThumbnail(item.thumbnail[0])
             .setDescription(he.decode(item.description[0]).substring(0, 200)+'...')
             .setFooter({ text: '( 👍 Interested | 📖 Can Teach | ❌ End Suggestion )'})
-            .setAuthor({ name: user.username, url: user.avatarURL(), iconURL: user.displayAvatarURL() })
+            .setAuthor(user ? { name: user.username, url: user.avatarURL(), iconURL: user.displayAvatarURL() } : null)
             .addFields(
                 {
                     name: ':hash: Number of Players',
@@ -250,7 +250,7 @@ module.exports = {
         if(bggSearchResult.found) {
             this.bggThing(bggSearchResult.thing_id)
                 .then(result => {
-                    let embed = this.itemToSuggestEmbed(result.items.item[0], interaction.member.user);
+                    let embed = this.itemToSuggestEmbed(result.items.item[0], interaction?.member?.user);
                     interaction.reply({ embeds: [embed], fetchReply: true }).then(embedMessage => {
                         try {
                             embedMessage.react("👍");
@@ -312,7 +312,7 @@ module.exports = {
                                 });
     
                             const deleteFilter = (reaction, user) => {
-                                return reaction.emoji.name == '❌' && user.id === interaction.member.user.id;
+                                return reaction.emoji.name == '❌' && user.id === interaction?.member?.user?.id;
                             };
                             const deleteCollector = embedMessage.createReactionCollector({ filter: deleteFilter });
                             deleteCollector.on('collect', () => {

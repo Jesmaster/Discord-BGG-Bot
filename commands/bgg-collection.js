@@ -131,7 +131,7 @@ module.exports = {
             .setTitle(username + '\'s collection')
             .setURL(collection_url)
             .setDescription(collection_url)
-            .setAuthor({ name: user.username, url: user.avatarURL(), iconURL: user.displayAvatarURL() })
+            .setAuthor(user ? { name: user.username, url: user.avatarURL(), iconURL: user.displayAvatarURL() } : null)
             .addFields(
                 {
                     name: 'Total',
@@ -176,7 +176,7 @@ module.exports = {
         }
 
         if (isObject && !hasErrors && result.items['$'].totalitems > 0) {
-            interaction.editReply({ embeds: [this.collectionToEmbed(result, username, interaction.member.user)] });
+            interaction.editReply({ embeds: [this.collectionToEmbed(result, username, interaction?.member?.user)] });
         }
         else {
             interaction.editReply(`No results found for "${username}".`);
