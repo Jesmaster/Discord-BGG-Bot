@@ -234,78 +234,59 @@ module.exports = {
     const { EmbedBuilder } = require("discord.js"),
       he = require("he");
 
-    return new EmbedBuilder()
-      .setColor("#3f3a60")
-      .setTitle(
-        item.name instanceof Array
-          ? item.name[0]["$"].value
-          : item.name["$"].value,
-      )
-      .setURL(`https://boardgamegeek.com/${item["$"].type}/${item["$"].id}`)
-      .setThumbnail(item.thumbnail[0])
-      .setDescription(he.decode(item.description[0]).substring(0, 200) + "...")
-      .setFooter({
-        text: "( 👍 Interested | 📖 Can Teach | ❌ End Suggestion )",
-      })
-      .setAuthor(
-        user
-          ? {
-              name: user.username,
-              url: user.avatarURL(),
-              iconURL: user.displayAvatarURL(),
-            }
-          : null,
-      )
-      .addFields(
-        {
-          name: ":hash: Number of Players",
-          value: `${item.minplayers[0]["$"].value} - ${item.maxplayers[0]["$"].value}`,
-          inline: true,
-        },
-        {
-          name: ":hourglass: Average Playtime",
-          value: `${item.playingtime[0]["$"].value} min`,
-          inline: true,
-        },
-        {
-          name: ":star: Average Rating",
-          value: `${Math.round(item.statistics[0].ratings[0].average[0]["$"].value * 10) / 10} (${item.statistics[0].ratings[0].usersrated[0]["$"].value} votes)`,
-          inline: true,
-        },
-        {
-          name: `\u200B`,
-          value: `\u200B`,
-          inline: true,
-        },
-        {
-          name: "Interested in playing",
-          value: `\u200B`,
-          inline: true,
-        },
-        {
-          name: "Can teach",
-          value: "\u200B",
-          inline: true,
-        },
-      );
-  },
-  /**
-   * Send game embed to channel given thing_id
-   */
-  thingIdToSuggestEmbed: async function (bggSearchResult, interaction) {
-    if (bggSearchResult.found) {
-      this.bggThing(bggSearchResult.thing_id).then((result) => {
-        let embed = this.itemToSuggestEmbed(
-          result.items.item[0],
-          interaction?.member?.user,
-        );
-        interaction
-          .reply({ embeds: [embed], fetchReply: true })
-          .then((embedMessage) => {
-            try {
-              embedMessage.react("👍");
-              embedMessage.react("📖");
-              embedMessage.react("❌");
+        return new EmbedBuilder()
+            .setColor('#3f3a60')
+            .setTitle(item.name instanceof Array ? item.name[0]['$'].value : item.name['$'].value)
+            .setURL(`https://boardgamegeek.com/${item['$'].type}/${item['$'].id}`)
+            .setDescription(he.decode(item.description[0]).substring(0, 200)+'...')
+            .setFooter({ text: '( 👍 Interested | 📖 Can Teach | ❌ End Suggestion )'})
+            .setAuthor(user ? { name: user.username, url: user.avatarURL(), iconURL: user.displayAvatarURL() } : null)
+            .addFields(
+                {
+                    name: ':hash: Number of Players',
+                    value: `${item.minplayers[0]['$'].value} - ${item.maxplayers[0]['$'].value}`,
+                    inline: true
+                },
+                {
+                    name: ':hourglass: Average Playtime',
+                    value: `${item.playingtime[0]['$'].value} min`,
+                    inline: true
+                },
+                {
+                  name: ":star: Average Rating",
+                  value: `${Math.round(item.statistics[0].ratings[0].average[0]["$"].value * 10) / 10} (${item.statistics[0].ratings[0].usersrated[0]["$"].value} votes)`,
+                  inline: true,
+                }
+                {
+                    name: `\u200B`,
+                    value: `\u200B`,
+                    inline: true,
+                },
+                {
+                    name: 'Interested in playing',
+                    value: `\u200B`,
+                    inline: true,
+                },
+                {
+                    name: 'Can teach',
+                    value: '\u200B',
+                    inline: true,
+                },
+            );
+    },
+    /**
+     * Send game embed to channel given thing_id
+     */
+    thingIdToSuggestEmbed: async function(bggSearchResult, interaction) {
+        if(bggSearchResult.found) {
+            this.bggThing(bggSearchResult.thing_id)
+                .then(result => {
+                    let embed = this.itemToSuggestEmbed(result.items.item[0], interaction?.member?.user);
+                    interaction.reply({ embeds: [embed], fetchReply: true }).then(embedMessage => {
+                        try {
+                            embedMessage.react("👍");
+                            embedMessage.react("📖");
+                            embedMessage.react("❌");
 
               const blank_char = "\u200B";
               const time = 1000 * 60 * 60 * 24 * 7;
