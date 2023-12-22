@@ -161,6 +161,7 @@ module.exports = {
 
         return new EmbedBuilder()
             .setColor('#3f3a60')
+            .setImage(item.image[0])
             .setTitle(item.name instanceof Array ? item.name[0]['$'].value : item.name['$'].value)
             .setURL(`https://boardgamegeek.com/${item['$'].type}/${item['$'].id}`)
             .setDescription(he.decode(item.description[0]).substring(0, 200)+'...')
@@ -213,6 +214,7 @@ module.exports = {
 
         return new EmbedBuilder()
             .setColor('#3f3a60')
+            .setImage(item.image[0])
             .setTitle(item.name instanceof Array ? item.name[0]['$'].value : item.name['$'].value)
             .setURL(`https://boardgamegeek.com/${item['$'].type}/${item['$'].id}`)
             .setDescription(he.decode(item.description[0]).substring(0, 200)+'...')
