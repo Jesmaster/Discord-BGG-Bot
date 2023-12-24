@@ -1,6 +1,6 @@
 {
   "name": "discord-bgg-bot",
-  "version": "2.1.6",
+  "version": "2.2.0",
   "description": "Board Game Geek Discord Bot",
   "main": "index.js",
   "scripts": {
@@ -24,17 +24,17 @@
   "author": "Jesmaster",
   "license": "ISC",
   "dependencies": {
-    "@discordjs/builders": "^1.4.0",
-    "@discordjs/rest": "^1.5.0",
-    "@keyv/redis": "^2.5.5",
-    "axios": "^1.3.4",
-    "discord-api-types": "^0.37.35",
-    "discord.js": "^14.7.1",
-    "dotenv": "^16.0.3",
+    "@discordjs/builders": "^1.7.0",
+    "@discordjs/rest": "^2.2.0",
+    "@keyv/redis": "^2.8.1",
+    "axios": "^1.6.2",
+    "discord-api-types": "^0.37.66",
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.3.1",
     "fs": "0.0.1-security",
     "he": "^1.2.0",
-    "keyv": "^4.5.2",
-    "xml2js": "^0.4.23"
+    "keyv": "^4.5.4",
+    "xml2js": "^0.6.2"
   },
   "devDependencies": {
     "eyes": "^0.1.8",
