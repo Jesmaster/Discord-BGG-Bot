@@ -163,6 +163,7 @@ module.exports = {
             .setColor('#3f3a60')
             .setTitle(item.name instanceof Array ? item.name[0]['$'].value : item.name['$'].value)
             .setURL(`https://boardgamegeek.com/${item['$'].type}/${item['$'].id}`)
+            .setThumbnail(item.thumbnail[0])
             .setDescription(he.decode(item.description[0]).substring(0, 200)+'...')
             .setAuthor(user ? { name: user.username, url: user.avatarURL(), iconURL: user.displayAvatarURL() } : null)
             .addFields(
@@ -210,6 +211,7 @@ module.exports = {
             .setColor('#3f3a60')
             .setTitle(item.name instanceof Array ? item.name[0]['$'].value : item.name['$'].value)
             .setURL(`https://boardgamegeek.com/${item['$'].type}/${item['$'].id}`)
+            .setThumbnail(item.thumbnail[0])
             .setDescription(he.decode(item.description[0]).substring(0, 200)+'...')
             .setFooter({ text: '( 👍 Interested | 📖 Can Teach | ❌ End Suggestion )'})
             .setAuthor(user ? { name: user.username, url: user.avatarURL(), iconURL: user.displayAvatarURL() } : null)
