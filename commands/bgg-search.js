@@ -256,7 +256,7 @@ module.exports = {
                   name: ":star: Average Rating",
                   value: `${Math.round(item.statistics[0].ratings[0].average[0]["$"].value * 10) / 10} (${item.statistics[0].ratings[0].usersrated[0]["$"].value} votes)`,
                   inline: true,
-                }
+                },
                 {
                     name: `\u200B`,
                     value: `\u200B`,
