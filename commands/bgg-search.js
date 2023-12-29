@@ -79,7 +79,7 @@ module.exports = {
     }
 
     const response = await axios(
-      "https://boardgamegeek.com/xmlapi2/thing?id=" + thing_id,
+      "https://boardgamegeek.com/xmlapi2/thing?id=" + thing_id +"&stats=1",
     );
 
     const { data } = response;
@@ -194,6 +194,11 @@ module.exports = {
           value: `${item.playingtime[0]["$"].value} min`,
           inline: true,
         },
+        {
+          name: ":star: Average Rating",
+          value: `${Math.round(item.statistics[0].ratings[0].average[0]["$"].value * 10) / 10} (${item.statistics[0].ratings[0].usersrated[0]["$"].value} votes)`,
+          inline: true,
+        },
       );
   },
   /**
@@ -260,6 +265,11 @@ module.exports = {
         {
           name: ":hourglass: Average Playtime",
           value: `${item.playingtime[0]["$"].value} min`,
+          inline: true,
+        },
+        {
+          name: ":star: Average Rating",
+          value: `${Math.round(item.statistics[0].ratings[0].average[0]["$"].value * 10) / 10} (${item.statistics[0].ratings[0].usersrated[0]["$"].value} votes)`,
           inline: true,
         },
         {
